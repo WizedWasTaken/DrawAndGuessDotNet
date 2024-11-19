@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Projekter\\DrawAndGuess\\source\\DrawAndGuess\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}|DrawAndGuess.Entities\\DrawAndGuess.Entities.csproj|d:\\projekter\\drawandguess\\source\\drawandguess\\drawandguess.entities\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}|DrawAndGuess.Entities\\DrawAndGuess.Entities.csproj|solutionrelative:drawandguess.entities\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "D:\\Projekter\\DrawAndGuess\\source\\DrawAndGuess\\DrawAndGuess.Entities\\Class1.cs",
+              "RelativeDocumentMoniker": "DrawAndGuess.Entities\\Class1.cs",
+              "ToolTip": "D:\\Projekter\\DrawAndGuess\\source\\DrawAndGuess\\DrawAndGuess.Entities\\Class1.cs",
+              "RelativeToolTip": "DrawAndGuess.Entities\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-19T23:00:13.697Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
