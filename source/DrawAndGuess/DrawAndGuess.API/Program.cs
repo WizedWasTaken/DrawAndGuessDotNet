@@ -17,16 +17,16 @@ namespace DrawAndGuess.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
-
             builder.Services.AddDbContextPool<DataContext>(opt =>
             opt.UseNpgsql(
-                builder.Configuration.GetConnectionString("BloggingContext"),
+                "Host=postgre-db.noahnielsen.dk; Database=\"DrawAndGuess\"; Username=DrawAndGuessCode2; Password=drawAndGuessCode2",
                 o => o
                     .SetPostgresVersion(13, 0)
                     .MapEnum<WordDifficulty>("wordDifficulty")
                     .MapEnum<Points>("points")
-                    ));
+            ));
+
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
