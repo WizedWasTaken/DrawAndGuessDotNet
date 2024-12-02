@@ -1,0 +1,6 @@
+@DrawAndGuess.API_HostAddress = http://localhost:5025
+
+GET {{DrawAndGuess.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

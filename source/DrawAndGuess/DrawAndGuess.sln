@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35118.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawAndGuess.Entities", "DrawAndGuess.Entities\DrawAndGuess.Entities.csproj", "{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrawAndGuess.Entities", "DrawAndGuess.Entities\DrawAndGuess.Entities.csproj", "{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawAndGuess.DataAccess", "DrawAndGuess.DataAccess\DrawAndGuess.DataAccess.csproj", "{0AB8D96B-C700-4E1F-8B71-0DD82C360562}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawAndGuess.API", "DrawAndGuess.API\DrawAndGuess.API.csproj", "{2CBD42BC-0721-4119-BD07-7034C20F48DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E89FE867-FF00-4D35-A444-5AAC8FCA79BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AB8D96B-C700-4E1F-8B71-0DD82C360562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AB8D96B-C700-4E1F-8B71-0DD82C360562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AB8D96B-C700-4E1F-8B71-0DD82C360562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AB8D96B-C700-4E1F-8B71-0DD82C360562}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CBD42BC-0721-4119-BD07-7034C20F48DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CBD42BC-0721-4119-BD07-7034C20F48DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CBD42BC-0721-4119-BD07-7034C20F48DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CBD42BC-0721-4119-BD07-7034C20F48DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
