@@ -10,4 +10,8 @@
     <PackageReference Include="TypeGen" Version="6.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DrawAndGuess.Entities\DrawAndGuess.Entities.csproj" />
+  </ItemGroup>
+
 </Project>

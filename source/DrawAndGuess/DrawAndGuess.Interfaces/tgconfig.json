@@ -1,0 +1,5 @@
+{
+  "generationSpecs": [ "ProjectGenerationSpec" ],
+  "outputPath": "./TypeGen/Interfaces",
+  "buildProject": true,
+}

@@ -1,0 +1,4 @@
+{
+  "generationSpecs": ["ProjectGenerationSpec"],
+  "outputPath": "./TypeGen/Entities"
+}
