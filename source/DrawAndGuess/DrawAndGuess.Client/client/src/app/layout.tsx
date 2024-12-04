@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
-        <SignalRProvider url="https://localhost:5001/hub">
+        <SignalRProvider url="https://localhost:7282/lobbyHub">
           <header>
             <h1>Header</h1>
           </header>

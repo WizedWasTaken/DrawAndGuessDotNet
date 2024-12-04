@@ -1,3 +1,5 @@
+using DrawAndGuess.SignalR.Hubs;
+
 namespace DrawAndGuess.SignalR
 {
     public class Program
@@ -10,6 +12,23 @@ namespace DrawAndGuess.SignalR
 
             builder.Services.AddControllers();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000") // Specify the allowed origin(s)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Required for SignalR
+                });
+            });
+
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -18,6 +37,9 @@ namespace DrawAndGuess.SignalR
 
             app.UseAuthorization();
 
+            app.UseCors("CorsPolicy");
+
+            app.MapHub<LobbyHub>("/lobbyHub");
 
             app.MapControllers();
 

@@ -4,8 +4,7 @@ import { useSignalR } from "@/lib/hooks/UseSignalR";
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const { connection, startConnection, stopConnection, connectionState } =
-    useSignalR();
+  const { connection } = useSignalR();
 
   const [message, setMessage] = useState<string>("");
 
@@ -30,29 +29,10 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-4xl font-bold mb-8">Home</h1>
-      <div className="space-x-4">
-        <button
-          onClick={startConnection}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-        >
-          Start Connection
-        </button>
-        <button
-          onClick={stopConnection}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
-        >
-          Stop Connection
-        </button>
-      </div>
-      <p className="mt-4 text-lg">
-        Status: <span className="font-semibold">{connectionState}</span>
-      </p>
 
       <p className="mt-4 text-lg">
-        Connection ID:{" "}
-        <span className="font-semibold">
-          {connection?.connectionId || "N/A"}
-        </span>
+        Status:{" "}
+        <span className="font-semibold">{connection?.state || "Loading"}</span>
       </p>
 
       {/* TESTING */}

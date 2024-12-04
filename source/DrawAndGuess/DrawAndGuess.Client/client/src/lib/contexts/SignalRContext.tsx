@@ -11,6 +11,7 @@ type SignalRContextType = {
   connection: HubConnection | null;
   startConnection: () => Promise<void>;
   stopConnection: () => Promise<void>;
+  connectionState: string;
 };
 
 export const SignalRContext = createContext<SignalRContextType | undefined>(
@@ -22,15 +23,27 @@ export const SignalRProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ url, children }) => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [connectionState, setConnectionState] =
+    useState<string>("Disconnected");
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
       .withUrl(url)
-      .configureLogging(LogLevel.Information)
-      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Trace)
       .build();
 
     setConnection(newConnection);
+
+    newConnection.onreconnecting(() => setConnectionState("Reconnecting"));
+    newConnection.onreconnected(() => setConnectionState("Connected"));
+    newConnection.onclose((error) => {
+      setConnectionState("Disconnected");
+      if (error) {
+        console.error("Connection closed with error:", error.message);
+      } else {
+        console.log("Connection closed.");
+      }
+    });
 
     return () => {
       if (newConnection.state === "Connected") {
@@ -44,9 +57,11 @@ export const SignalRProvider: React.FC<{
 
     try {
       await connection.start();
+      setConnectionState("Connected");
       console.log("SignalR Connected");
-    } catch (error) {
-      console.error("Error starting connection:", error);
+    } catch (error: any) {
+      setConnectionState("Disconnected");
+      console.error("Error starting connection:", error.message);
     }
   };
 
@@ -55,15 +70,16 @@ export const SignalRProvider: React.FC<{
 
     try {
       await connection.stop();
+      setConnectionState("Disconnected");
       console.log("SignalR Disconnected");
-    } catch (error) {
-      console.error("Error stopping connection:", error);
+    } catch (error: any) {
+      console.error("Error stopping connection:", error.message);
     }
   };
 
   return (
     <SignalRContext.Provider
-      value={{ connection, startConnection, stopConnection }}
+      value={{ connection, startConnection, stopConnection, connectionState }}
     >
       {children}
     </SignalRContext.Provider>
