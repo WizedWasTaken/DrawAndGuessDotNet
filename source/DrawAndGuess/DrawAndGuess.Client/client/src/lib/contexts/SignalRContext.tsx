@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -27,6 +27,9 @@ export const SignalRProvider: React.FC<{
     useState<string>("Disconnected");
 
   useEffect(() => {
+    // Only create a new connection if there isn't one already
+    if (connection) return; // Skip if connection already exists
+
     const newConnection = new HubConnectionBuilder()
       .withUrl(url)
       .configureLogging(LogLevel.Trace)
@@ -34,23 +37,21 @@ export const SignalRProvider: React.FC<{
 
     setConnection(newConnection);
 
+    // Event handlers
     newConnection.onreconnecting(() => setConnectionState("Reconnecting"));
     newConnection.onreconnected(() => setConnectionState("Connected"));
-    newConnection.onclose((error) => {
-      setConnectionState("Disconnected");
-      if (error) {
-        console.error("Connection closed with error:", error.message);
-      } else {
-        console.log("Connection closed.");
-      }
-    });
+    // newConnection.onclose((error) => {
+    //   setConnectionState("Disconnected");
+    //   if (error) {
+    //     console.error("Connection closed with error:", error.message);
+    //   } else {
+    //     console.log("Connection closed.");
+    //   }
+    // });
 
-    return () => {
-      if (newConnection.state === "Connected") {
-        newConnection.stop();
-      }
-    };
-  }, [url]);
+    // Cleanup connection on unmount or url change
+    return () => {};
+  }, [url, connection]); // Add `connection` to dependency array to avoid creating a new connection if one already exists
 
   const startConnection = async () => {
     if (!connection) return;

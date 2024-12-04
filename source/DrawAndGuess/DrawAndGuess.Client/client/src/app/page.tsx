@@ -1,31 +1,30 @@
 "use client";
 
 import { useSignalR } from "@/lib/hooks/UseSignalR";
-import { useState, useEffect } from "react";
+import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const { connection, startConnection, stopConnection, connectionState } =
     useSignalR();
-
   const [message, setMessage] = useState<string>("");
 
-  useEffect(() => {
-    if (connection) {
-      connection.on("ReceiveMessage", (message) => {
-        setMessage(message);
-      });
-
-      return () => {
-        connection.off("ReceiveMessage");
-      };
-    }
-  }, [connection]);
+  useSignalRListener("ReceiveMessage", (msg: string) => {
+    setMessage(msg);
+  });
 
   const sendMessage = async () => {
     if (!connection) return;
 
     await connection.send("Testing");
   };
+
+  // Use Effects for useSignalR
+
+  useEffect(() => {
+    console.log("Connection State: ", connectionState);
+    console.log("Connection: ", connection);
+  }, [connectionState, connection]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -47,15 +46,12 @@ export default function Home() {
       <p className="mt-4 text-lg">
         Status: <span className="font-semibold">{connectionState}</span>
       </p>
-
       <p className="mt-4 text-lg">
         Connection ID:{" "}
         <span className="font-semibold">
           {connection?.connectionId || "N/A"}
         </span>
       </p>
-
-      {/* TESTING */}
       <div className="mt-8">
         <button
           onClick={sendMessage}
