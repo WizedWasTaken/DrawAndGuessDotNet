@@ -35,8 +35,6 @@ export const SignalRProvider: React.FC<{
     const newConnection = new HubConnectionBuilder()
       .withUrl(url)
       .configureLogging(LogLevel.Trace)
-      .withAutomaticReconnect()
-      .withServerTimeout(10000)
       .build();
 
     connectionInstance = newConnection; // Assign to singleton instance

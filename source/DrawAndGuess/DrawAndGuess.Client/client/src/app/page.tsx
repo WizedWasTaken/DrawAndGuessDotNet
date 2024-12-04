@@ -2,7 +2,7 @@
 
 import { useSignalR } from "@/lib/hooks/UseSignalR";
 import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const { connection, startConnection, stopConnection, connectionState } =
@@ -18,16 +18,8 @@ export default function Home() {
 
     await connection.send("Testing");
   };
-
-  // Use Effects for useSignalR
-
-  useEffect(() => {
-    console.log("Connection State: ", connectionState);
-    console.log("Connection: ", connection);
-  }, [connectionState, connection]);
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-grow flex-col items-center justify-center">
       <h1 className="text-4xl font-bold mb-8">Home</h1>
       <div className="space-x-4">
         <button
