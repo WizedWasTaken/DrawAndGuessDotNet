@@ -44,7 +44,8 @@ export default function Home() {
         </button>
       </div>
       <p className="mt-4 text-lg">
-        Status: <span className="font-semibold">{connectionState}</span>
+        Status:{" "}
+        <span className="font-semibold">{connectionState || "Loading"}</span>
       </p>
       <p className="mt-4 text-lg">
         Connection ID:{" "}
@@ -60,7 +61,7 @@ export default function Home() {
           Send Test Message
         </button>
       </div>
-      <p>Besked: {message}</p>
+      <p>Besked: {message || "Ingen besked endnu."}</p>
     </div>
   );
 }

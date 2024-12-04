@@ -3,6 +3,7 @@ import "./globals.scss";
 
 // Contexts
 import { SignalRProvider } from "@/lib/contexts/SignalRContext";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Tegn og gæt",
@@ -19,8 +20,8 @@ export default function RootLayout({
       <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
         <SignalRProvider url="https://localhost:7282/lobbyHub">
           <header className="flex gap-5 text-lg justify-center items-center">
-            <a href="/">Forside</a>
-            <a href="/test">Test</a>
+            <Link href="/">Forside</Link>
+            <Link href="/test">Test</Link>
           </header>
           <main className="flex flex-grow flex-col">{children}</main>
           <footer>

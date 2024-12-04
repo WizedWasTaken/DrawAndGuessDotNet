@@ -1,0 +1,58 @@
+[2024-12-04T10:28:07.787Z] Debug: Starting HubConnection. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.789Z] Debug: Starting connection with transfer format 'Text'. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.789Z] Debug: Sending negotiation request: https://localhost:7282/lobbyHub/negotiate?negotiateVersion=1. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.799Z] Debug: Selecting transport 'WebSockets'. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.800Z] Trace: (WebSockets transport) Connecting. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.805Z] Information: WebSocket connected to wss://localhost:7282/lobbyHub?id=2nuWNbIKeDttK7axJUQAKQ. node_modules_09ccb0._.js:615:30
+[2024-12-04T10:28:07.805Z] Debug: The HttpConnection connected successfully. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.805Z] Debug: Sending handshake request. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.805Z] Trace: (WebSockets transport) sending data. String data of length 32. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.805Z] Information: Using HubProtocol 'json'. node_modules_09ccb0._.js:615:30
+[2024-12-04T10:28:07.806Z] Trace: (WebSockets transport) data received. String data of length 3. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.806Z] Debug: Server handshake complete. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.806Z] Trace: (WebSockets transport) sending data. String data of length 11. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:07.806Z] Debug: HubConnection connected successfully. node_modules_09ccb0._.js:619:30
+SignalR Connected src_a0ca58._.js:56:21
+Connection State:  Connected src_9429f2._.js:104:21
+Connection:  
+Object { _nextKeepAlive: 1733308102806, _freezeEventListener: _freezeEventListener()
+, serverTimeoutInMilliseconds: 10000, keepAliveIntervalInMilliseconds: 15000, _statefulReconnectBufferSize: 100000, _logger: {…}, _protocol: {…}, connection: {…}, _reconnectPolicy: {…}, _handshakeProtocol: {}, … }
+src_9429f2._.js:105:21
+Navigated to http://localhost:3000/test
+[2024-12-04T10:28:09.377Z] Trace: (WebSockets transport) socket closed. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.377Z] Debug: HttpConnection.stopConnection(undefined) called while in state Connected. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.377Z] Information: Connection disconnected. node_modules_09ccb0._.js:615:30
+[2024-12-04T10:28:09.377Z] Debug: HubConnection.connectionClosed(undefined) called while in state Connected. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.377Z] Information: Connection reconnecting. node_modules_09ccb0._.js:615:30
+[2024-12-04T10:28:09.377Z] Information: Reconnect attempt number 1 will start in 0 ms. node_modules_09ccb0._.js:615:30
+Connection State:  Reconnecting src_9429f2._.js:104:21
+Connection:  
+Object { _nextKeepAlive: 1733308102806, _freezeEventListener: _freezeEventListener()
+, serverTimeoutInMilliseconds: 10000, keepAliveIntervalInMilliseconds: 15000, _statefulReconnectBufferSize: 100000, _logger: {…}, _protocol: {…}, connection: {…}, _reconnectPolicy: {…}, _handshakeProtocol: {}, … }
+src_9429f2._.js:105:21
+[2024-12-04T10:28:09.379Z] Debug: Starting connection with transfer format 'Text'. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.379Z] Debug: Sending negotiation request: https://localhost:7282/lobbyHub/negotiate?negotiateVersion=1. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.388Z] Debug: Selecting transport 'WebSockets'. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.388Z] Trace: (WebSockets transport) Connecting. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.395Z] Information: WebSocket connected to wss://localhost:7282/lobbyHub?id=7LIJWw-eOLE-nnDn9cGjAw. node_modules_09ccb0._.js:615:30
+[2024-12-04T10:28:09.395Z] Debug: The HttpConnection connected successfully. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.395Z] Debug: Sending handshake request. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.396Z] Trace: (WebSockets transport) sending data. String data of length 32. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.396Z] Information: Using HubProtocol 'json'. node_modules_09ccb0._.js:615:30
+[2024-12-04T10:28:09.396Z] Trace: (WebSockets transport) data received. String data of length 3. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.397Z] Debug: Server handshake complete. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.397Z] Trace: (WebSockets transport) sending data. String data of length 11. node_modules_09ccb0._.js:619:30
+[2024-12-04T10:28:09.397Z] Information: HubConnection reconnected successfully. node_modules_09ccb0._.js:615:30
+Connection State:  Connected src_9429f2._.js:104:21
+Connection:  
+Object { _nextKeepAlive: 1733308104397, _freezeEventListener: _freezeEventListener()
+, serverTimeoutInMilliseconds: 10000, keepAliveIntervalInMilliseconds: 15000, _statefulReconnectBufferSize: 100000, _logger: {…}, _protocol: {…}, connection: {…}, _reconnectPolicy: {…}, _handshakeProtocol: {}, … }
+src_9429f2._.js:105:21
+Connection State:  Disconnected src_c75a83._.js:104:21
+Connection:  null src_c75a83._.js:105:21
+Connection State:  Disconnected src_c75a83._.js:104:21
+Connection:  
+Object { _nextKeepAlive: 0, _freezeEventListener: _freezeEventListener()
+, serverTimeoutInMilliseconds: 10000, keepAliveIntervalInMilliseconds: 15000, _statefulReconnectBufferSize: 100000, _logger: {…}, _protocol: {…}, connection: {…}, _reconnectPolicy: {…}, _handshakeProtocol: {}, … }
+src_c75a83._.js:105:21
+[Fast Refresh] rebuilding node_modules_next_dist_client_9bb038._.js:12440:25

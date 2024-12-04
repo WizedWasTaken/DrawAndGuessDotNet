@@ -14,20 +14,22 @@ type SignalRContextType = {
   connectionState: string;
 };
 
-export const SignalRContext = createContext<SignalRContextType | undefined>(
-  undefined
-);
+export const SignalRContext = createContext<SignalRContextType | null>(null);
+
+let connectionInstance: HubConnection | null = null; // Singleton instance
+console.log(connectionInstance);
 
 export const SignalRProvider: React.FC<{
   url: string;
   children: React.ReactNode;
 }> = ({ url, children }) => {
-  const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [connection, setConnection] = useState<HubConnection | null>(
+    connectionInstance
+  );
   const [connectionState, setConnectionState] =
     useState<string>("Disconnected");
 
   useEffect(() => {
-    // Only create a new connection if there isn't one already
     if (connection) return; // Skip if connection already exists
 
     const newConnection = new HubConnectionBuilder()
@@ -37,23 +39,20 @@ export const SignalRProvider: React.FC<{
       .withServerTimeout(10000)
       .build();
 
+    connectionInstance = newConnection; // Assign to singleton instance
     setConnection(newConnection);
 
     // Event handlers
     newConnection.onreconnecting(() => setConnectionState("Reconnecting"));
     newConnection.onreconnected(() => setConnectionState("Connected"));
-    // newConnection.onclose((error) => {
-    //   setConnectionState("Disconnected");
-    //   if (error) {
-    //     console.error("Connection closed with error:", error.message);
-    //   } else {
-    //     console.log("Connection closed.");
-    //   }
-    // });
 
-    // Cleanup connection on unmount or url change
-    return () => {};
-  }, [url, connection]); // Add `connection` to dependency array to avoid creating a new connection if one already exists
+    startConnection();
+
+    // Cleanup connection on unmount
+    return () => {
+      // Only close if this is the last component using the connection
+    };
+  }, [url]); // Removed `connection` from dependency array
 
   const startConnection = async () => {
     if (!connection) return;
