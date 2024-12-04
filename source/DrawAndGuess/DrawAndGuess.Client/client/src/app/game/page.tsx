@@ -1,3 +1,5 @@
+"use client";
+
 import { useSignalR } from "@/lib/hooks/UseSignalR";
 
 export default function Game() {

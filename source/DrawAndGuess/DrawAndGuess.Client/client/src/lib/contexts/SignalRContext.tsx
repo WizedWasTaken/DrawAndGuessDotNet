@@ -48,7 +48,7 @@ export const SignalRProvider: React.FC<{
 
     // Cleanup connection on unmount
     return () => {
-      // Only close if this is the last component using the connection
+      stopConnection();
     };
   }, [url]); // Removed `connection` from dependency array
 
