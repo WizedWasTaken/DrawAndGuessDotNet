@@ -16,70 +16,64 @@ type SignalRContextType = {
 
 export const SignalRContext = createContext<SignalRContextType | null>(null);
 
-let connectionInstance: HubConnection | null = null; // Singleton instance
-console.log(connectionInstance);
-
 export const SignalRProvider: React.FC<{
   url: string;
   children: React.ReactNode;
 }> = ({ url, children }) => {
-  const [connection, setConnection] = useState<HubConnection | null>(
-    connectionInstance
-  );
+  const [connection, setConnection] = useState<HubConnection | null>(null);
   const [connectionState, setConnectionState] =
     useState<string>("Disconnected");
 
   useEffect(() => {
-    if (connection) return; // Skip if connection already exists
-
     const newConnection = new HubConnectionBuilder()
       .withUrl(url)
-      .configureLogging(LogLevel.Trace)
+      .configureLogging(LogLevel.Information)
       .build();
 
-    connectionInstance = newConnection; // Assign to singleton instance
     setConnection(newConnection);
 
     // Event handlers
     newConnection.onreconnecting(() => setConnectionState("Reconnecting"));
     newConnection.onreconnected(() => setConnectionState("Connected"));
 
+    const startConnection = async () => {
+      try {
+        await newConnection.start();
+        setConnectionState("Connected");
+        console.log("SignalR Connected");
+      } catch (error: any) {
+        setConnectionState("Disconnected");
+        console.error("Error starting connection:", error.message);
+      }
+    };
+
+    const stopConnection = async () => {
+      try {
+        await newConnection.stop();
+        setConnectionState("Disconnected");
+        console.log("SignalR Disconnected");
+      } catch (error: any) {
+        console.error("Error stopping connection:", error.message);
+      }
+    };
+
+    // Start the connection on mount
     startConnection();
 
     // Cleanup connection on unmount
     return () => {
       stopConnection();
     };
-  }, [url]); // Removed `connection` from dependency array
-
-  const startConnection = async () => {
-    if (!connection) return;
-
-    try {
-      await connection.start();
-      setConnectionState("Connected");
-      console.log("SignalR Connected");
-    } catch (error: any) {
-      setConnectionState("Disconnected");
-      console.error("Error starting connection:", error.message);
-    }
-  };
-
-  const stopConnection = async () => {
-    if (!connection) return;
-
-    try {
-      await connection.stop();
-      setConnectionState("Disconnected");
-      console.log("SignalR Disconnected");
-    } catch (error: any) {
-      console.error("Error stopping connection:", error.message);
-    }
-  };
+  }, [url]);
 
   return (
     <SignalRContext.Provider
-      value={{ connection, startConnection, stopConnection, connectionState }}
+      value={{
+        connection,
+        startConnection: () => connection?.start() || Promise.resolve(),
+        stopConnection: () => connection?.stop() || Promise.resolve(),
+        connectionState,
+      }}
     >
       {children}
     </SignalRContext.Provider>

@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
         <SignalRProvider url="https://localhost:7282/lobbyHub">
           <ThemeProvider
