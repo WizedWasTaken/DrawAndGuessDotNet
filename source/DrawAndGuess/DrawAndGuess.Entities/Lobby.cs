@@ -11,6 +11,7 @@ namespace DrawAndGuess.Entities
         #region Fields
 
         private int lobbyId;
+        private string title;
         private List<Player> players;
 
         #endregion Fields
@@ -20,9 +21,10 @@ namespace DrawAndGuess.Entities
         public Lobby()
         { }
 
-        public Lobby(int lobbyId, List<Player> players)
+        public Lobby(int lobbyId, string title, List<Player> players)
         {
             LobbyId = lobbyId;
+            Title = title;
             Players = players;
         }
 
@@ -34,6 +36,15 @@ namespace DrawAndGuess.Entities
         {
             get { return lobbyId; }
             set { lobbyId = value; }
+        }
+
+        public string Title
+        {
+            get { return title; }
+            set
+            {
+                title = value;
+            }
         }
 
         public List<Player> Players
