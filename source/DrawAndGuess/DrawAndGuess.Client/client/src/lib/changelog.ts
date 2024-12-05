@@ -22,4 +22,20 @@ export const changelogs: IChangelog[] = [
       "Added Github component",
     ],
   },
+  {
+    version: "0.2.0",
+    date: "5/13/2024",
+    changes: [
+      "Added technical information dialog",
+      "Added useSignalRListener hook",
+      "Added Dialog component",
+      "Added DialogTrigger component",
+      "Added DialogContent component",
+      "Added DialogDescription component",
+      "Added DialogHeader component",
+      "Added DialogTitle component",
+      "Added E2E tests",
+      "Added Changelog",
+    ],
+  },
 ];
