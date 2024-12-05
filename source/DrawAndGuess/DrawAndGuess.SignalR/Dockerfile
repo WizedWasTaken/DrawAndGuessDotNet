@@ -9,13 +9,13 @@ COPY ./DrawAndGuess.Entities/DrawAndGuess.Entities.csproj ./DrawAndGuess.Entitie
 COPY ./DrawAndGuess.Interfaces/DrawAndGuess.Interfaces.csproj ./DrawAndGuess.Interfaces/
 COPY ./DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj ./DrawAndGuess.SignalR/
 
-# Restore dependencies
-RUN dotnet restore
+# Restore dependencies for the SignalR project (specify the .csproj file explicitly)
+RUN dotnet restore ./DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj
 
 # Copy the rest of the application files
 COPY . ./ 
 
-# Build the application
+# Build the application (specify the .csproj file explicitly)
 RUN dotnet publish ./DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj -c Release -o /out
 
 # Use the official ASP.NET Core runtime image to run the application
