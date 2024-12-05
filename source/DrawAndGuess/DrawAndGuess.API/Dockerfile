@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the project files for DrawAndGuess.Entities, DrawAndGuess.Interfaces, and DrawAndGuess.SignalR
 COPY ./DrawAndGuess.Entities/DrawAndGuess.Entities.csproj ./DrawAndGuess.Entities/
 COPY ./DrawAndGuess.DataAccess/DrawAndGuess.DataAccess.csproj ./DrawAndGuess.DataAccess/
-COPY ./DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj ./DrawAndGuess.SignalR/
+COPY ./DrawAndGuess.API/DrawAndGuess.API.csproj ./DrawAndGuess.API/
 
 # Restore dependencies for the SignalR project (specify the .csproj file explicitly)
 RUN dotnet restore ./DrawAndGuess.API/DrawAndGuess.API.csproj
@@ -29,7 +29,7 @@ COPY --from=build /out ./
 
 # Expose the port the SignalR app listens on
 EXPOSE 5050
-EXPOSE 5050
+EXPOSE 5051
 
 # Set the entry point to run the SignalR application
 ENTRYPOINT ["dotnet", "DrawAndGuess.API.dll"]
