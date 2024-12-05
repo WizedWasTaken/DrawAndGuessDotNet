@@ -45,13 +45,13 @@ jobs:
           push: true
           tags: ${{ env.SIGNALR_IMAGE_URL }}
 
-      # - name: Build and Push Backend Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API
-      #     file: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API/Dockerfile
-      #     push: true
-      #     tags: ${{ env.BACKEND_IMAGE_URL }}
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./source/DrawAndGuess/
+          file: ./source/DrawAndGuess/DrawAndGuess.API/Dockerfile
+          push: true
+          tags: ${{ env.BACKEND_IMAGE_URL }}
 
       - name: Deploy Frontend to CapRover
         uses: caprover/deploy-from-github@v1.1.2
