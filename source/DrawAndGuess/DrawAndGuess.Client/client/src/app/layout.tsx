@@ -6,6 +6,7 @@ import { SignalRProvider } from "@/lib/contexts/SignalRContext";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TechnicalInformation from "@/components/TechnicalInformation";
 
 export const metadata: Metadata = {
   title: "Tegn og gæt",
@@ -34,6 +35,9 @@ export default function RootLayout({
             <Header />
             <main className="flex flex-grow flex-col">{children}</main>
             <Footer />
+            <div className="fixed bottom-0 p-5">
+              <TechnicalInformation />
+            </div>
           </ThemeProvider>
         </SignalRProvider>
       </body>

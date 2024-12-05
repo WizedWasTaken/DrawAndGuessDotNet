@@ -4,8 +4,8 @@ namespace DrawAndGuess.Interfaces
 {
     public interface ILobbyHub
     {
-        bool CreateLobby(Lobby lobby);
+        Task Testing();
 
-        bool JoinLobby(string lobbyId, string playerId);
+        Task<int> GetConnectedCount();
     }
 }

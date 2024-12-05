@@ -1,10 +1,11 @@
 ﻿using DrawAndGuess.Entities;
+using DrawAndGuess.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 
 namespace DrawAndGuess.SignalR.Hubs
 {
-    public class LobbyHub : Microsoft.AspNetCore.SignalR.Hub
+    public class LobbyHub : Microsoft.AspNetCore.SignalR.Hub, ILobbyHub
     {
         private static readonly ConcurrentDictionary<string, Player> ConnectedClients = new();
 
@@ -19,6 +20,10 @@ namespace DrawAndGuess.SignalR.Hubs
         public override async Task OnConnectedAsync()
         {
             var connectionId = Context.ConnectionId;
+
+            ConnectedClients.TryAdd(connectionId, new Player());
+
+            await Clients.All.SendAsync("userCountChanged", ConnectedClients.Count);
 
             Console.WriteLine($"{DateTime.UtcNow} - {connectionId} connected to the server.");
 
@@ -44,6 +49,13 @@ namespace DrawAndGuess.SignalR.Hubs
         public async Task Testing()
         {
             await Clients.All.SendAsync("ReceiveMessage", $"{Context.ConnectionId} trykkede på test knappen!");
+        }
+
+        public async Task<int> GetConnectedCount()
+        {
+            Console.WriteLine("Kaldt");
+            await Clients.Caller.SendAsync("userCountChanged", ConnectedClients.Count);
+            return ConnectedClients.Count;
         }
     }
 }

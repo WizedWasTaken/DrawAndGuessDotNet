@@ -9,12 +9,12 @@ export default function Footer() {
   return (
     <footer className="flex p-5 text-lg justify-between items-center relative">
       <section>
-        <p className="text-sm">
+        {/* <p className="text-sm">
           Connection ID: {connection?.connectionId || "N/A"}
         </p>
         <p className="text-sm">
           Connection State: {connection?.state || "N/A"}
-        </p>
+        </p> */}
       </section>
       <section className="absolute font-bold inset-0 flex items-center justify-center">
         Made with ❤ by Noah Nielsen
