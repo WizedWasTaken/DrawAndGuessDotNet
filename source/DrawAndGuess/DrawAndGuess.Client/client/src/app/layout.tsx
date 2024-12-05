@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Multiplayer tegn og gæt lavet af Noah A. Nielsen",
 };
 
+const SIGNALR_URL = process.env.NEXT_PUBLIC_SIGNALR_URL || "";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
-        <SignalRProvider url="https://localhost:7282/lobbyHub">
+        <SignalRProvider url={SIGNALR_URL}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
