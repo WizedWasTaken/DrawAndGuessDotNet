@@ -31,18 +31,18 @@ jobs:
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
-          context: ./source/DrawAndGuess/DrawAndGuess.Client/DrawAndGuess.Client
-          file: ./source/DrawAndGuess/DrawAndGuess.Client/DrawAndGuess.Client/Dockerfile
+          context: ./source\DrawAndGuess\DrawAndGuess.Client\client
+          file: ./source/DrawAndGuess/DrawAndGuess.Client/DrawAndGuess.Client/client/Dockerfile
           push: true
           tags: ${{ env.FRONTEND_IMAGE_URL }}
 
-      - name: Build and Push Backend Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API
-          file: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API/Dockerfile
-          push: true
-          tags: ${{ env.BACKEND_IMAGE_URL }}
+      # - name: Build and Push Backend Image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API
+      #     file: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API/Dockerfile
+      #     push: true
+      #     tags: ${{ env.BACKEND_IMAGE_URL }}
 
       - name: Deploy Frontend to CapRover
         uses: caprover/deploy-from-github@v1.1.2
@@ -52,10 +52,10 @@ jobs:
           token: "${{ secrets.FRONTEND_APP_TOKEN }}"
           image: ${{ env.FRONTEND_IMAGE_URL }}
 
-      - name: Deploy Backend to CapRover
-        uses: caprover/deploy-from-github@v1.1.2
-        with:
-          server: "${{ secrets.CAPROVER_SERVER }}"
-          app: "${{ secrets.BACKEND_APP_NAME }}"
-          token: "${{ secrets.BACKEND_APP_TOKEN }}"
-          image: ${{ env.BACKEND_IMAGE_URL }}
+      # - name: Deploy Backend to CapRover
+      #   uses: caprover/deploy-from-github@v1.1.2
+      #   with:
+      #     server: "${{ secrets.CAPROVER_SERVER }}"
+      #     app: "${{ secrets.BACKEND_APP_NAME }}"
+      #     token: "${{ secrets.BACKEND_APP_TOKEN }}"
+      #     image: ${{ env.BACKEND_IMAGE_URL }}
