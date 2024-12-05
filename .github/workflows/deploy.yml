@@ -42,7 +42,7 @@ jobs:
       - name: Build and Push SignalR Image
         uses: docker/build-push-action@v5
         with:
-          context: ./source/DrawAndGuess/DrawAndGuess.SignalR/
+          context: ./source/DrawAndGuess/
           file: ./source/DrawAndGuess/DrawAndGuess.SignalR/Dockerfile
           push: true
           tags: ${{ env.SIGNALR_IMAGE_URL }}
