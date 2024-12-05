@@ -1,6 +1,9 @@
-name: Build and Deploy Docker Image
+name: Build and Deploy Docker Images
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build_and_deploy:
@@ -20,21 +23,39 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.SECURE_TOKEN }}
 
-      - name: Preset Image Name
-        run: echo "IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Set Image URLs
+        run: |
+          echo "FRONTEND_IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}-frontend:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}-backend:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: Build and push Docker Image
+      - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./source/DrawAndGuess/DrawAndGuess.Client/DrawAndGuess.Client
+          file: ./source/DrawAndGuess/DrawAndGuess.Client/DrawAndGuess.Client/Dockerfile
           push: true
-          tags: ${{ env.IMAGE_URL }}
+          tags: ${{ env.FRONTEND_IMAGE_URL }}
 
-      - name: Deploy Image to CapRover
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API
+          file: ./source/DrawAndGuess/DrawAndGuess.API/DrawAndGuess.API/Dockerfile
+          push: true
+          tags: ${{ env.BACKEND_IMAGE_URL }}
+
+      - name: Deploy Frontend to CapRover
         uses: caprover/deploy-from-github@v1.1.2
         with:
           server: "${{ secrets.CAPROVER_SERVER }}"
-          app: "${{ secrets.APP_NAME }}"
-          token: "${{ secrets.APP_TOKEN }}"
-          image: ${{ env.IMAGE_URL }}
+          app: "${{ secrets.FRONTEND_APP_NAME }}"
+          token: "${{ secrets.FRONTEND_APP_TOKEN }}"
+          image: ${{ env.FRONTEND_IMAGE_URL }}
+
+      - name: Deploy Backend to CapRover
+        uses: caprover/deploy-from-github@v1.1.2
+        with:
+          server: "${{ secrets.CAPROVER_SERVER }}"
+          app: "${{ secrets.BACKEND_APP_NAME }}"
+          token: "${{ secrets.BACKEND_APP_TOKEN }}"
+          image: ${{ env.BACKEND_IMAGE_URL }}
