@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   description: "Multiplayer tegn og gæt lavet af Noah A. Nielsen",
 };
 
-const SIGNALR_URL = process.env.NEXT_PUBLIC_SIGNALR_URL || "";
+const SIGNALR_URL =
+  process.env.NEXT_PUBLIC_SIGNALR_URL ||
+  "https://drawandguess-signalr.noahnielsen.dk/lobbyHub";
 
 export default function RootLayout({
   children,
