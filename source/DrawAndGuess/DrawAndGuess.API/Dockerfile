@@ -16,7 +16,7 @@ RUN dotnet restore ./DrawAndGuess.API/DrawAndGuess.API.csproj
 COPY . ./ 
 
 # Build the application (specify the .csproj file explicitly)
-RUN dotnet publish ./DrawAndGuess.SignalR/DrawAndGuess.API.csproj -c Release -o /out
+RUN dotnet publish ./DrawAndGuess.API/DrawAndGuess.API.csproj -c Release -o /out
 
 # Use the official ASP.NET Core runtime image to run the application
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
