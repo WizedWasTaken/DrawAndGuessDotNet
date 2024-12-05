@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import React from "react";
-import { CustomColumnDef } from "@/lib/types";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
