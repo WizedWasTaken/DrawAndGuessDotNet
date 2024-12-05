@@ -29,13 +29,15 @@ jobs:
           echo "BACKEND_IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}-backend:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           echo "SIGNALR_IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}-signalr:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: Build and Push Frontend Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./source/DrawAndGuess/DrawAndGuess.Client/client
-          file: ./source/DrawAndGuess/DrawAndGuess.Client/client/Dockerfile
-          push: true
-          tags: ${{ env.FRONTEND_IMAGE_URL }}
+      # Disabled for test reasons
+
+      # - name: Build and Push Frontend Image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./source/DrawAndGuess/DrawAndGuess.Client/client
+      #     file: ./source/DrawAndGuess/DrawAndGuess.Client/client/Dockerfile
+      #     push: true
+      #     tags: ${{ env.FRONTEND_IMAGE_URL }}
 
       - name: Build and Push SignalR Image
         uses: docker/build-push-action@v5
@@ -53,13 +55,14 @@ jobs:
       #     push: true
       #     tags: ${{ env.BACKEND_IMAGE_URL }}
 
-      - name: Deploy Frontend to CapRover
-        uses: caprover/deploy-from-github@v1.1.2
-        with:
-          server: "${{ secrets.CAPROVER_SERVER }}"
-          app: "${{ secrets.FRONTEND_APP_NAME }}"
-          token: "${{ secrets.FRONTEND_APP_TOKEN }}"
-          image: ${{ env.FRONTEND_IMAGE_URL }}
+      # DISABLED FOR TEST REASONS
+      # - name: Deploy Frontend to CapRover
+      #   uses: caprover/deploy-from-github@v1.1.2
+      #   with:
+      #     server: "${{ secrets.CAPROVER_SERVER }}"
+      #     app: "${{ secrets.FRONTEND_APP_NAME }}"
+      #     token: "${{ secrets.FRONTEND_APP_TOKEN }}"
+      #     image: ${{ env.FRONTEND_IMAGE_URL }}
 
       - name: Deploy SignalR Hubs to CapRover
         uses: caprover/deploy-from-github@v1.1.2

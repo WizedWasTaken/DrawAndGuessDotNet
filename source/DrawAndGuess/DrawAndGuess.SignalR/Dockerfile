@@ -4,10 +4,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the solution and the project files for DrawAndGuess.Entities and DrawAndGuess.Interfaces as well
-COPY ../DrawAndGuess.Entities/DrawAndGuess.Entities.csproj ./DrawAndGuess.Entities/
-COPY ../DrawAndGuess.Interfaces/DrawAndGuess.Interfaces.csproj ./DrawAndGuess.Interfaces/
-COPY ../DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj ./DrawAndGuess.SignalR/
+# Copy the project files for DrawAndGuess.Entities, DrawAndGuess.Interfaces, and DrawAndGuess.SignalR
+COPY ./DrawAndGuess.Entities/DrawAndGuess.Entities.csproj ./DrawAndGuess.Entities/
+COPY ./DrawAndGuess.Interfaces/DrawAndGuess.Interfaces.csproj ./DrawAndGuess.Interfaces/
+COPY ./DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj ./DrawAndGuess.SignalR/
 
 # Restore dependencies
 RUN dotnet restore
@@ -16,7 +16,7 @@ RUN dotnet restore
 COPY . ./ 
 
 # Build the application
-RUN dotnet publish ../DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj -c Release -o /out
+RUN dotnet publish ./DrawAndGuess.SignalR/DrawAndGuess.SignalR.csproj -c Release -o /out
 
 # Use the official ASP.NET Core runtime image to run the application
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
@@ -31,5 +31,5 @@ COPY --from=build /out ./
 EXPOSE 5000
 EXPOSE 5001
 
-# Set the entry point to run the application
+# Set the entry point to run the SignalR application
 ENTRYPOINT ["dotnet", "DrawAndGuess.SignalR.dll"]
