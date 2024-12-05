@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 #Test the application
-# RUN npm run test
+# RUN npm run test #TODO: Add tests
 
 # Expose the port that the application will run on
 EXPOSE 3000
