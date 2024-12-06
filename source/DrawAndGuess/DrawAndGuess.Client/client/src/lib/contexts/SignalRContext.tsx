@@ -76,7 +76,7 @@ export const SignalRProvider: React.FC<{
     };
   }, [url]);
 
-  const invoke = async <T>(methodName: string, ...args: any[]): Promise<T> => {
+  const invoke = async <T,>(methodName: string, ...args: any[]): Promise<T> => {
     if (connectionState === "Connected") {
       return connection!.invoke<T>(methodName, ...args);
     } else {
