@@ -31,7 +31,6 @@ import { MoreHorizontal } from "lucide-react";
 // Types
 import { Lobby } from "@/entities/lobby";
 import { Label } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
 import { Player } from "@/entities/player";
 
 export function LobbyTableColumn(): ColumnDef<Lobby>[] {
@@ -88,7 +87,9 @@ export function LobbyTableColumn(): ColumnDef<Lobby>[] {
         const players: Player[] = row.getValue("players");
         return (
           <div className="text-right">
-            {players.map((player) => player.name).join(", ")}
+            {players.length > 0
+              ? players.map((player) => player.name).join(", ")
+              : "Ingen spillere :(("}
           </div>
         );
       },

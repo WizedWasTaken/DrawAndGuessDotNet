@@ -14,9 +14,6 @@ export default function Header() {
           <Link href="/">Forside</Link>
         </Button>
         <Button size="default" asChild>
-          <Link href="/test">Test</Link>
-        </Button>
-        <Button size="default" asChild>
           <Link href="/lobbies">Lobbies</Link>
         </Button>
       </section>
