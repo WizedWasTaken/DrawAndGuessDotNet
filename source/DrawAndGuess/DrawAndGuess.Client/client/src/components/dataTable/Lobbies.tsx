@@ -59,16 +59,13 @@ export function LobbiesTable() {
 
   // Function to create a new lobby
   const createLobby = async (lobby: Lobby) => {
-    // Add the new lobby to the list of lobbies
-    setLobbies((prevLobbies) => [...prevLobbies, lobby]);
+    const tempLobby: Lobby = await invoke<Lobby>("CreateLobby", lobby.title);
 
-    const tempLobby: Lobby = await invoke<Lobby>("CreateLobby", lobby);
-
-    if (tempLobby == lobby) {
+    if (tempLobby) {
       return tempLobby;
     }
 
-    return lobby;
+    throw new Error("Failed to create lobby");
   };
 
   return (
