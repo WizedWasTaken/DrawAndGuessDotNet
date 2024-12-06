@@ -56,25 +56,7 @@ namespace DrawAndGuess.SignalR.Hubs
 
         public Task<List<Lobby>> GetCurrentLobbies()
         {
-            // Mock data - make real players.
-            var players = new List<Player>
-            {
-                new Player { PlayerId = 1, Name = "Player 1" },
-                new Player { PlayerId = 2, Name = "Player 2" },
-                new Player { PlayerId = 3, Name = "Player 3" },
-                new Player { PlayerId = 4, Name = "Player 4" },
-                new Player { PlayerId = 5, Name = "Player 5" },
-            };
-
-            // Mock data
-            var lobbies = new List<Lobby>
-            {
-                new Lobby(1, "Lobby 1", players, LobbyStatus.Waiting),
-                new Lobby(2, "Lobby 2", new List<Player>(), LobbyStatus.Waiting),
-                new Lobby(3, "Lobby 3", new List<Player>(), LobbyStatus.Waiting),
-                new Lobby(4, "Lobby 4", players, LobbyStatus.Waiting),
-                new Lobby(5, "Lobby 5", new List<Player>(), LobbyStatus.Waiting),
-            };
+            var lobbies = ActiveLobbies;
 
             return Task.FromResult(lobbies);
         }
@@ -112,6 +94,24 @@ namespace DrawAndGuess.SignalR.Hubs
             await Clients.All.SendAsync("lobbyUpdated", lobby);
 
             return lobby;
+        }
+
+        public async Task LeaveLobby(int lobbyId)
+        {
+            var connectionId = Context.ConnectionId;
+
+            var player = ConnectedClients[connectionId];
+
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            if (lobby == null)
+            {
+                return;
+            }
+
+            lobby.Players.Remove(player);
+
+            await Clients.All.SendAsync("lobbyUpdated", lobby);
         }
     }
 }
