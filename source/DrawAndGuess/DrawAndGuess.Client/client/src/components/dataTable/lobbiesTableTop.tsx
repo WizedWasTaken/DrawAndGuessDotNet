@@ -18,13 +18,20 @@ export default function LobbiesTableTop({
   createNewLobby,
 }: {
   lobbies: Lobby[];
-  createNewLobby(title: string): Lobby;
+  createNewLobby(lobby: Lobby): Promise<Lobby>;
 }) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Get data from form
     const formData = new FormData(event.currentTarget);
     const title = formData.get("title") as string;
-    createNewLobby(title);
+
+    // Create Lobby object
+    const lobby = new Lobby();
+    lobby.title = title;
+
+    // Call method
+    createNewLobby(lobby);
   }
 
   return (

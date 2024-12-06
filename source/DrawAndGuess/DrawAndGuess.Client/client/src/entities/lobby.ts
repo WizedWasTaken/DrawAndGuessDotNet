@@ -6,7 +6,7 @@
 import { Player } from "./player";
 
 export class Lobby {
-  lobbyId: number;
-  title: string;
-  players: Player[];
+  lobbyId: number = 0;
+  title: string = "";
+  players: Player[] = [];
 }

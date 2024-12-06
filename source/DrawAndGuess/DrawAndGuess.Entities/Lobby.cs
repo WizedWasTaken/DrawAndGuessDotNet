@@ -6,12 +6,20 @@ using System.Threading.Tasks;
 
 namespace DrawAndGuess.Entities
 {
+    public enum LobbyStatus
+    {
+        Waiting,
+        InGame,
+        Ended
+    }
+
     public class Lobby
     {
         #region Fields
 
         private int lobbyId;
         private string title;
+        private LobbyStatus lobbyStatus;
         private List<Player> players;
 
         #endregion Fields
@@ -21,11 +29,12 @@ namespace DrawAndGuess.Entities
         public Lobby()
         { }
 
-        public Lobby(int lobbyId, string title, List<Player> players)
+        public Lobby(int lobbyId, string title, List<Player> players, LobbyStatus lobbyStatus)
         {
             LobbyId = lobbyId;
             Title = title;
             Players = players;
+            LobbyStatus = lobbyStatus;
         }
 
         #endregion Constructors
@@ -51,6 +60,12 @@ namespace DrawAndGuess.Entities
         {
             get { return players; }
             set { players = value; }
+        }
+
+        public LobbyStatus LobbyStatus
+        {
+            get { return lobbyStatus; }
+            set { lobbyStatus = value; }
         }
 
         #endregion Properties

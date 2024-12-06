@@ -1,30 +1,74 @@
-// Use client directive for Next.js
 "use client";
 
 // Imports
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { DataTable } from "@/components/dataTable/data-table";
 import { LobbyTableColumn } from "@/lib/columnDefinitions";
 import { Lobby } from "@/entities/lobby"; // Ensure you have a Member type defined appropriately
 import LobbiesTableTop from "@/components/dataTable/lobbiesTableTop";
 import { Dialog } from "@/components/ui/dialog";
+import { useSignalR } from "@/lib/hooks/UseSignalR";
+import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
 
 /**
  * The LobbiesTable component
  * @returns The LobbiesTable component
  */
 export function LobbiesTable() {
+  const { connection, connectionState, invoke } = useSignalR();
   const [lobbies, setLobbies] = React.useState<Lobby[]>([]);
 
+  // Listen for changes to the lobbies
+  useSignalRListener("lobbyCreated", (lobby: Lobby) => {
+    console.log("Lobby created:", lobby);
+    setLobbies((prevLobbies) => [...prevLobbies, lobby]);
+  });
+
+  useSignalRListener("lobbyUpdated", (lobby: Lobby) => {
+    console.log("Lobby updated:", lobby);
+    setLobbies((prevLobbies) =>
+      prevLobbies.map((l) => (l.lobbyId === lobby.lobbyId ? lobby : l))
+    );
+  });
+
   React.useEffect(() => {
-    // Call SignalR to fetch all lobbies
-  }, []);
+    const fetchLobbies = async () => {
+      try {
+        const currentLobbies = await invoke<Lobby[]>("GetCurrentLobbies");
+        console.log("Current lobbies:", currentLobbies);
+        if (currentLobbies) {
+          setLobbies(currentLobbies);
+        }
+      } catch (error) {
+        console.error("Error fetching lobbies:", error);
+      }
+    };
 
-  // Function to create a new member
-  const createLobby = () => {
-    // Create a new lobby and add it to the state
+    if (connectionState === "Connected") {
+      fetchLobbies();
+    }
 
-    return new Lobby();
+    return () => {
+      connection?.off("GetCurrentLobbies");
+    };
+  }, [connectionState, invoke]);
+
+  if (!connection) {
+    return;
+  }
+
+  // Function to create a new lobby
+  const createLobby = async (lobby: Lobby) => {
+    // Add the new lobby to the list of lobbies
+    setLobbies((prevLobbies) => [...prevLobbies, lobby]);
+
+    const tempLobby: Lobby = await invoke<Lobby>("CreateLobby", lobby);
+
+    if (tempLobby == lobby) {
+      return tempLobby;
+    }
+
+    return lobby;
   };
 
   return (
