@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace DrawAndGuess.Entities
 {
-    public enum LobbyStatus
-    {
-        Waiting,
-        InGame,
-        Ended
-    }
-
     public class Lobby
     {
         #region Fields

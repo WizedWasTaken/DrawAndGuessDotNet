@@ -3,8 +3,8 @@
  * Any changes made to this file can be lost when this file is regenerated.
  */
 
-export enum WordDifficulty {
-    Easy = 0,
-    Medium = 1,
-    Hard = 2,
+export enum LobbyStatus {
+    Waiting = 0,
+    InGame = 1,
+    Ended = 2,
 }

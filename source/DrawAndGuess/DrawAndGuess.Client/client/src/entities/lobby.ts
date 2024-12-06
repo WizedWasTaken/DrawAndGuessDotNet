@@ -4,9 +4,11 @@
  */
 
 import { Player } from "./player";
+import { LobbyStatus } from "./lobby-status";
 
 export class Lobby {
-  lobbyId: number = 0;
-  title: string = "";
-  players: Player[] = [];
+    lobbyId: number = -1;
+    title: string =  "" ;
+    players: Player[];
+    lobbyStatus: LobbyStatus;
 }

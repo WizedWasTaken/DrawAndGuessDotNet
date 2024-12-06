@@ -35,7 +35,7 @@ export default function LobbiesTableTop({
   }
 
   return (
-    <div className="flex mb-5 justify-end items-center">
+    <div className="flex mb-5 w-full justify-end items-center">
       <Dialog>
         <DialogTrigger asChild>
           <Button>Opret ny lobby</Button>

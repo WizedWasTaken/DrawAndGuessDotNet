@@ -32,8 +32,11 @@ import { MoreHorizontal } from "lucide-react";
 import { Lobby } from "@/entities/lobby";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Player } from "@/entities/player";
+import { LobbyStatus } from "@/entities/lobby-status";
 
-export function LobbyTableColumn(): ColumnDef<Lobby>[] {
+export function LobbyTableColumn(
+  JoinLobby: (lobby: Lobby) => void
+): ColumnDef<Lobby>[] {
   return [
     {
       id: "select",
@@ -95,6 +98,22 @@ export function LobbyTableColumn(): ColumnDef<Lobby>[] {
       },
     },
     {
+      accessorKey: "lobbyStatus",
+      meta: {
+        name: "Status",
+      },
+      header: ({ column }: { column: any }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }: { row: any }) => {
+        const status: LobbyStatus = row.getValue("lobbyStatus");
+        const statusText = LobbyStatus[status]; // Convert enum value to string
+        console.log("Status:", statusText);
+
+        return <div className="text-right">{statusText}</div>;
+      },
+    },
+    {
       id: "actions",
       meta: {
         name: "Handlinger",
@@ -107,66 +126,69 @@ export function LobbyTableColumn(): ColumnDef<Lobby>[] {
         }
 
         return (
-          <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                  onClick={() => setTempLobby(lobby)}
-                >
-                  <span className="sr-only">Åben menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Muligheder</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    const { lobbyId } = row.original;
-                    // updateLobbyStatus(lobbyId);
+          <div className="flex justify-end gap-2">
+            <Dialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => setTempLobby(lobby)}
+                  >
+                    <span className="sr-only">Åben menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Muligheder</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {/* <DropdownMenuItem
+                    onClick={() => {
+                      const { lobbyId } = row.original;
+                      // updateLobbyStatus(lobbyId);
+                    }}
+                  >
+                    Tilslut
+                  </DropdownMenuItem> */}
+                  <DropdownMenuItem>
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem>Tilslut</DropdownMenuItem>
+                    </DialogTrigger>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Tilslut {lobby.title}</DialogTitle>
+                  <DialogDescription>
+                    Tilslut lobbien ved at indtaste dit brugernavn.
+                  </DialogDescription>
+                </DialogHeader>
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+
+                    const formData = new FormData(event.currentTarget);
+
+                    const username = formData.get("username") as string;
+
+                    JoinLobby(lobby);
+                    // TODO: Implement form submission
                   }}
                 >
-                  Rediger
-                </DropdownMenuItem>
-                <DialogTrigger asChild>
-                  <DropdownMenuItem>Rediger</DropdownMenuItem>
-                </DialogTrigger>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Rediger lobby</DialogTitle>
-                <DialogDescription>
-                  Rediger lobbyen {lobby.title}
-                </DialogDescription>
-              </DialogHeader>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  alert("Form submitted");
-
-                  // TODO: Implement form submission
-                }}
-              >
-                <DialogDescription className="flex flex-col gap-5">
-                  <div>
-                    <Label>Titel</Label>
-                    <Input
-                      name="title"
-                      id="title"
-                      type="text"
-                      defaultValue={lobby.title}
-                    />
-                  </div>
-                </DialogDescription>
-                <DialogFooter className="pt-5">
-                  <Button type="submit">Bekræft</Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+                  <DialogDescription className="flex flex-col gap-5">
+                    <div>
+                      <Label>Brugernavn</Label>
+                      <Input name="username" id="username" type="text" />
+                    </div>
+                  </DialogDescription>
+                  <DialogFooter className="pt-5">
+                    <Button type="submit">Bekræft</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         );
       },
     },

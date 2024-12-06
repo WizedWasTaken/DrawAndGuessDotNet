@@ -24,7 +24,20 @@ namespace DrawAndGuess.API
                     .SetPostgresVersion(13, 0)
                     .MapEnum<WordDifficulty>("wordDifficulty")
                     .MapEnum<Points>("points")
+                    .MapEnum<LobbyStatus>("lobbyStatus")
             ));
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                });
+            });
+
+            builder.Services.AddScoped<IRepository<Player>, Repository<Player>>();
 
             var app = builder.Build();
 
@@ -40,6 +53,8 @@ namespace DrawAndGuess.API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.UseCors("CorsPolicy");
 
             app.Run();
         }

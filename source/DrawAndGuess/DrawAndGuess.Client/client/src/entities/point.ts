@@ -6,6 +6,6 @@
 import { Points } from "./points";
 
 export class Point {
-    pointId: number;
+    pointId: number = -1;
     value: Points;
 }

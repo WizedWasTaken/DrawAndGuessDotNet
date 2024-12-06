@@ -1,4 +1,29 @@
 {
   "generationSpecs": ["ProjectGenerationSpec"],
-  "outputPath": "./TypeGen/Entities"
+  "outputPath": "./TypeGen/Entities",
+  "defaultValuesForTypes": {
+    "number": "-1",
+    "Date | null": "null",
+    "string": " \"\" ",
+    "boolean": "false",
+    "Statistic": "new Statistic()",
+    "Lobby": "new Lobby()",
+    "Player": "new Player()",
+    "Point": "new Point()",
+    "Round": "new Round()",
+    "Admin": "new Admin()",
+    "Game": "new Game()",
+    "Guess": "new Guess()",
+    "Word": "new Word()",
+    "List<Lobby>": "new List<Lobby>()",
+    "List<Player>": "new List<Player>()",
+    "List<Point>": "new List<Point>()",
+    "List<Round>": "new List<Round>()",
+    "List<Admin>": "new List<Admin>()",
+    "List<Game>": "new List<Game>()",
+    "List<Guess>": "new List<Guess>()",
+    "List<Word>": "new List<Word>()",
+    "List<Statistic>": "new List<Statistic>()",
+    "Point[]": "[]"
+  }
 }

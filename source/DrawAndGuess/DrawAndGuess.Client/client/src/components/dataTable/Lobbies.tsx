@@ -68,13 +68,20 @@ export function LobbiesTable() {
     throw new Error("Failed to create lobby");
   };
 
+  const JoinLobby = async (lobby: Lobby) => {
+    const tempLobby: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId);
+
+    if (tempLobby) {
+      return tempLobby;
+    }
+
+    throw new Error("Failed to join lobby");
+  };
+
   return (
     <>
       <LobbiesTableTop lobbies={lobbies} createNewLobby={createLobby} />
-      <DataTable
-        data={lobbies}
-        columns={LobbyTableColumn()} // Ensure the column definitions are received as expected
-      />
+      <DataTable data={lobbies} columns={LobbyTableColumn(JoinLobby)} />
     </>
   );
 }

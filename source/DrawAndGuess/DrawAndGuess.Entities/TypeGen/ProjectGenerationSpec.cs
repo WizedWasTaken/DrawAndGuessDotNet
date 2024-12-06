@@ -10,6 +10,7 @@ namespace DrawAndGuess.Entities.TypeGen
             AddClass<Game>();
             AddClass<Guess>();
             AddClass<Lobby>();
+            AddEnum<LobbyStatus>();
             AddClass<Player>();
             AddClass<Point>();
             AddEnum<Points>();

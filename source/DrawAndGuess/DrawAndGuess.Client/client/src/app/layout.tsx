@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
+      <body className={`antialiased min-h-screen flex flex-grow flex-col dark`}>
         <SignalRProvider url={SIGNALR_URL}>
           <ThemeProvider
             attribute="class"

@@ -21,6 +21,7 @@ namespace DrawAndGuess.DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "lobbyStatus", new[] { "ended", "in_game", "waiting" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "points", new[] { "one", "three", "two" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "wordDifficulty", new[] { "easy", "hard", "medium" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -105,6 +106,13 @@ namespace DrawAndGuess.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LobbyId"));
 
+                    b.Property<LobbyStatus>("LobbyStatus")
+                        .HasColumnType("\"lobbyStatus\"");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("LobbyId");
 
                     b.ToTable("Lobbies");
@@ -133,7 +141,7 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StatisticId")
+                    b.Property<int?>("StatisticId")
                         .HasColumnType("integer");
 
                     b.HasKey("PlayerId");
@@ -269,9 +277,7 @@ namespace DrawAndGuess.DataAccess.Migrations
 
                     b.HasOne("DrawAndGuess.Entities.Statistic", "Statistic")
                         .WithMany()
-                        .HasForeignKey("StatisticId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatisticId");
 
                     b.Navigation("Statistic");
                 });

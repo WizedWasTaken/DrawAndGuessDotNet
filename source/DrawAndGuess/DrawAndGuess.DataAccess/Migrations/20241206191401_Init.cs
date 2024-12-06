@@ -8,17 +8,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DrawAndGuess.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Init3 : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:lobbyStatus", "ended,in_game,waiting")
+                .Annotation("Npgsql:Enum:points", "one,three,two")
+                .Annotation("Npgsql:Enum:wordDifficulty", "easy,hard,medium");
+
             migrationBuilder.CreateTable(
                 name: "Lobbies",
                 columns: table => new
                 {
                     LobbyId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    LobbyStatus = table.Column<LobbyStatus>(type: "\"lobbyStatus\"", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -80,7 +87,7 @@ namespace DrawAndGuess.DataAccess.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    StatisticId = table.Column<int>(type: "integer", nullable: false),
+                    StatisticId = table.Column<int>(type: "integer", nullable: true),
                     LobbyId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -95,8 +102,7 @@ namespace DrawAndGuess.DataAccess.Migrations
                         name: "FK_Players_Statistics_StatisticId",
                         column: x => x.StatisticId,
                         principalTable: "Statistics",
-                        principalColumn: "StatisticId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "StatisticId");
                 });
 
             migrationBuilder.CreateTable(

@@ -10,6 +10,14 @@ namespace DrawAndGuess.SignalR.Hubs
         private static readonly ConcurrentDictionary<string, Player> ConnectedClients = new();
         private static List<Lobby> ActiveLobbies = new();
 
+        // Add a static list of lobbies
+        private readonly Lobby lobby1 = new Lobby(1, "Cheferne", new List<Player> { new Player("Noah A."), new Player("Noah O."), new Player("Keso Master 9000") }, LobbyStatus.Waiting);
+
+        private readonly Lobby lobby2 = new Lobby(2, "Chefens Kontor", new List<Player> { new Player("Simon P.") }, LobbyStatus.InGame);
+        private readonly Lobby lobby3 = new Lobby(3, "Kontoret", new List<Player> { new Player("Simon P.") }, LobbyStatus.InGame);
+        private readonly Lobby lobby4 = new Lobby(4, "Kontoret", new List<Player> { new Player("Simon P.") }, LobbyStatus.InGame);
+        private readonly Lobby lobby5 = new Lobby(5, "Kontoret", new List<Player> { new Player("Simon P.") }, LobbyStatus.Ended);
+
         public LobbyHub()
         {
         }
@@ -56,6 +64,15 @@ namespace DrawAndGuess.SignalR.Hubs
 
         public Task<List<Lobby>> GetCurrentLobbies()
         {
+            if (ActiveLobbies.Count == 0)
+            {
+                ActiveLobbies.Add(lobby1);
+                ActiveLobbies.Add(lobby2);
+                ActiveLobbies.Add(lobby3);
+                ActiveLobbies.Add(lobby4);
+                ActiveLobbies.Add(lobby5);
+            }
+
             var lobbies = ActiveLobbies;
 
             return Task.FromResult(lobbies);
