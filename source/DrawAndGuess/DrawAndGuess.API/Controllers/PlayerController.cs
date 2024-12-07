@@ -1,5 +1,6 @@
 ﻿using DrawAndGuess.DataAccess;
 using DrawAndGuess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace DrawAndGuess.API.Controllers
     [ApiController]
     public class PlayerController(IRepository<Player> repository) : ControllerBase
     {
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> Get()
         {
@@ -42,26 +44,6 @@ namespace DrawAndGuess.API.Controllers
         {
             try
             {
-                await repository.Add(player);
-                return Ok(player);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpPost("signUp")]
-        public async Task<ActionResult> SignUp(Player player)
-        {
-            try
-            {
-                // TODO: Create Player repository.
-                if (repository.GetById(player.PlayerId) != null)
-                {
-                    throw new Exception("Player already exists");
-                }
-
                 await repository.Add(player);
                 return Ok(player);
             }

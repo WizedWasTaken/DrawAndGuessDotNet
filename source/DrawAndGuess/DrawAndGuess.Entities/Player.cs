@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace DrawAndGuess.Entities
 {
-    public class Player
+    public class Player : IdentityUser
     {
         #region Fields
 
-        private int playerId;
         private string name;
         private string password;
         private string email;
@@ -36,24 +36,9 @@ namespace DrawAndGuess.Entities
             Statistic = statistic;
         }
 
-        public Player(int playerId, string name, string password, string email, Statistic statistic)
-        {
-            PlayerId = playerId;
-            Name = name;
-            Password = password;
-            Email = email;
-            Statistic = statistic;
-        }
-
         #endregion Constructors
 
         #region Properties
-
-        public int PlayerId
-        {
-            get { return playerId; }
-            set { playerId = value; }
-        }
 
         public string Name
         {
