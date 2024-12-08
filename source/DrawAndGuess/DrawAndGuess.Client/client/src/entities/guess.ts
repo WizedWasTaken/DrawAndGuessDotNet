@@ -6,9 +6,28 @@
 import { Player } from "./player";
 import { WordDifficulty } from "./word-difficulty";
 
-export class Guess {
-    guessId: number = -1;
-    guessWord: string =  "" ;
-    guessedBy: Player = new Player();
-    wordDifficulty: WordDifficulty;
+export interface Guess {
+  guessId: number;
+  guessWord: string;
+  guessedBy: Player;
+  wordDifficulty: WordDifficulty;
+}
+
+export class Guess implements Guess {
+  guessId: number;
+  guessWord: string;
+  guessedBy: Player;
+  wordDifficulty: WordDifficulty;
+
+  constructor(
+    guessId: number,
+    guessWord: string,
+    guessedBy: Player,
+    wordDifficulty: WordDifficulty
+  ) {
+    this.guessId = guessId;
+    this.guessWord = guessWord;
+    this.guessedBy = guessedBy;
+    this.wordDifficulty = wordDifficulty;
+  }
 }

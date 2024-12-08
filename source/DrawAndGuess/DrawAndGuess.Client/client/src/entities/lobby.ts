@@ -6,9 +6,28 @@
 import { Player } from "./player";
 import { LobbyStatus } from "./lobby-status";
 
-export class Lobby {
-    lobbyId: number = -1;
-    title: string =  "" ;
-    players: Player[];
-    lobbyStatus: LobbyStatus;
+export interface ILobby {
+  lobbyId: number;
+  title: string;
+  players: Player[];
+  lobbyStatus: LobbyStatus;
+}
+
+export class Lobby implements ILobby {
+  lobbyId: number;
+  title: string;
+  players: Player[];
+  lobbyStatus: LobbyStatus;
+
+  constructor(
+    lobbyId: number,
+    title: string,
+    players: Player[],
+    lobbyStatus: LobbyStatus
+  ) {
+    this.lobbyId = lobbyId;
+    this.title = title;
+    this.players = players;
+    this.lobbyStatus = lobbyStatus;
+  }
 }

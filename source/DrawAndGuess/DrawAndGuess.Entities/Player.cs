@@ -12,8 +12,6 @@ namespace DrawAndGuess.Entities
         #region Fields
 
         private string name;
-        private string password;
-        private string email;
         private Statistic? statistic;
 
         #endregion Fields
@@ -28,11 +26,9 @@ namespace DrawAndGuess.Entities
             Name = name;
         }
 
-        public Player(string name, string password, string email, Statistic statistic)
+        public Player(string name, Statistic statistic)
         {
             Name = name;
-            Password = password;
-            Email = email;
             Statistic = statistic;
         }
 
@@ -44,18 +40,6 @@ namespace DrawAndGuess.Entities
         {
             get { return name; }
             set { name = value; }
-        }
-
-        public string Password
-        {
-            get { return password; }
-            set { password = value; }
-        }
-
-        public string Email
-        {
-            get { return email; }
-            set { email = value; }
         }
 
         public Statistic? Statistic

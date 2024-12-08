@@ -6,6 +6,6 @@
 import { Point } from "./point";
 
 export class Statistic {
-    statisticId: number = -1;
-    points: Point[] = [];
+    statisticId: number;
+    points: Point[];
 }

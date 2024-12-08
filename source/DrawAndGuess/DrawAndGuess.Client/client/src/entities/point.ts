@@ -5,7 +5,17 @@
 
 import { Points } from "./points";
 
-export class Point {
-    pointId: number = -1;
-    value: Points;
+export interface IPoint {
+  pointId: number;
+  value: Points;
+}
+
+export class Point implements IPoint {
+  pointId: number;
+  value: Points;
+
+  constructor(pointId: number, value: Points) {
+    this.pointId = pointId;
+    this.value = value;
+  }
 }

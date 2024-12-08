@@ -6,10 +6,32 @@
 import { Lobby } from "./lobby";
 import { Round } from "./round";
 
-export class Game {
-    gameId: number = -1;
-    lobby: Lobby = new Lobby();
-    rounds: Round[];
-    startTime: Date;
-    endTime: Date;
+export interface IGame {
+  gameId: number;
+  lobby: Lobby;
+  rounds: Round[];
+  startTime: Date;
+  endTime: Date;
+}
+
+export class Game implements IGame {
+  gameId: number;
+  lobby: Lobby;
+  rounds: Round[];
+  startTime: Date;
+  endTime: Date;
+
+  constructor(
+    gameId: number,
+    lobby: Lobby,
+    rounds: Round[],
+    startTime: Date,
+    endTime: Date
+  ) {
+    this.gameId = gameId;
+    this.lobby = lobby;
+    this.rounds = rounds;
+    this.startTime = startTime;
+    this.endTime = endTime;
+  }
 }

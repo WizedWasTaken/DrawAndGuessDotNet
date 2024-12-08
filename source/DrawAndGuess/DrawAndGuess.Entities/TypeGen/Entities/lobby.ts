@@ -7,8 +7,8 @@ import { Player } from "./player";
 import { LobbyStatus } from "./lobby-status";
 
 export class Lobby {
-    lobbyId: number = -1;
-    title: string =  "" ;
+    lobbyId: number;
+    title: string;
     players: Player[];
     lobbyStatus: LobbyStatus;
 }

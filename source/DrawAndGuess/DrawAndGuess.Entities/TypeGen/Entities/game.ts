@@ -7,8 +7,8 @@ import { Lobby } from "./lobby";
 import { Round } from "./round";
 
 export class Game {
-    gameId: number = -1;
-    lobby: Lobby = new Lobby();
+    gameId: number;
+    lobby: Lobby;
     rounds: Round[];
     startTime: Date;
     endTime: Date;

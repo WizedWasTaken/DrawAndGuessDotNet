@@ -7,8 +7,6 @@ import { IdentityUser } from "./identity-user";
 import { Statistic } from "./statistic";
 
 export class Player extends IdentityUser {
-    name: string =  "" ;
-    password: string =  "" ;
-    email: string =  "" ;
-    statistic: Statistic = new Statistic();
+    name: string;
+    statistic: Statistic;
 }

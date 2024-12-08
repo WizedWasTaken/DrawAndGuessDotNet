@@ -6,6 +6,6 @@
 import { Player } from "./player";
 
 export class Admin {
-    adminId: number = -1;
-    user: Player = new Player();
+    adminId: number;
+    user: Player;
 }

@@ -7,9 +7,28 @@ import { Word } from "./word";
 import { Guess } from "./guess";
 import { Lobby } from "./lobby";
 
-export class Round {
-    roundId: number = -1;
-    correctWord: Word = new Word();
-    guesses: Guess[];
-    lobby: Lobby = new Lobby();
+export interface IRound {
+  roundId: number;
+  correctWord: Word;
+  guesses: Guess[];
+  lobby: Lobby;
+}
+
+export class Round implements IRound {
+  roundId: number;
+  correctWord: Word;
+  guesses: Guess[];
+  lobby: Lobby;
+
+  constructor(
+    roundId: number,
+    correctWord: Word,
+    guesses: Guess[],
+    lobby: Lobby
+  ) {
+    this.roundId = roundId;
+    this.correctWord = correctWord;
+    this.guesses = guesses;
+    this.lobby = lobby;
+  }
 }

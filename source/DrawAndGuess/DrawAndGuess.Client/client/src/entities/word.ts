@@ -3,7 +3,17 @@
  * Any changes made to this file can be lost when this file is regenerated.
  */
 
-export class Word {
-    wordId: number = -1;
-    value: string =  "" ;
+export interface IWord {
+  wordId: number;
+  value: string;
+}
+
+export class Word implements IWord {
+  wordId: number;
+  value: string;
+
+  constructor(wordId: number, value: string) {
+    this.wordId = wordId;
+    this.value = value;
+  }
 }

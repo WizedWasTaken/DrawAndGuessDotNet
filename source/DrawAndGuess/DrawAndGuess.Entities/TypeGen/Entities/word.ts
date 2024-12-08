@@ -4,6 +4,6 @@
  */
 
 export class Word {
-    wordId: number = -1;
-    value: string =  "" ;
+    wordId: number;
+    value: string;
 }

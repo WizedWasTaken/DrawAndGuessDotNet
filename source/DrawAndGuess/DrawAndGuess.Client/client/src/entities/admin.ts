@@ -5,7 +5,17 @@
 
 import { Player } from "./player";
 
-export class Admin {
-    adminId: number = -1;
-    user: Player = new Player();
+export interface IAdmin {
+  adminId: number;
+  user: Player;
+}
+
+class Admin implements IAdmin {
+  adminId: number;
+  user: Player;
+
+  constructor(adminId: number, user: Player) {
+    this.adminId = adminId;
+    this.user = user;
+  }
 }

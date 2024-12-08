@@ -8,8 +8,8 @@ import { Guess } from "./guess";
 import { Lobby } from "./lobby";
 
 export class Round {
-    roundId: number = -1;
-    correctWord: Word = new Word();
+    roundId: number;
+    correctWord: Word;
     guesses: Guess[];
-    lobby: Lobby = new Lobby();
+    lobby: Lobby;
 }

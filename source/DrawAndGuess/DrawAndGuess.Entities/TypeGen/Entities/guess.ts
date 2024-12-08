@@ -7,8 +7,8 @@ import { Player } from "./player";
 import { WordDifficulty } from "./word-difficulty";
 
 export class Guess {
-    guessId: number = -1;
-    guessWord: string =  "" ;
-    guessedBy: Player = new Player();
+    guessId: number;
+    guessWord: string;
+    guessedBy: Player;
     wordDifficulty: WordDifficulty;
 }

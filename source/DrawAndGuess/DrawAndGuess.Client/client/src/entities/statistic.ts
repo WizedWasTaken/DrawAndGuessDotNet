@@ -5,7 +5,17 @@
 
 import { Point } from "./point";
 
-export class Statistic {
-    statisticId: number = -1;
-    points: Point[] = [];
+export interface IStatistic {
+  statisticId: number;
+  points: Point[];
+}
+
+export class Statistic implements IStatistic {
+  statisticId: number;
+  points: Point[];
+
+  constructor(statisticId: number, points: Point[]) {
+    this.statisticId = statisticId;
+    this.points = points;
+  }
 }
