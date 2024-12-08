@@ -16,8 +16,9 @@ namespace DrawAndGuess.SignalR
             {
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000", "https://drawandguess.noahnielsen.dk", "https://drawandguess-frontend.noahnielsen.dk") // Specify the allowed origins
+                    policy.WithOrigins("http://localhost:3000", "https://noahnielsen.dk", "https://nielsen-tech.dk", "https://drawandguess.noahnielsen.dk", "https://drawandguess-frontend.noahnielsen.dk") // Specify the allowed origins
                           .AllowAnyHeader()
+
                           .AllowAnyMethod()
                           .AllowCredentials(); // Required for SignalR
                 });
