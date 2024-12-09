@@ -17,7 +17,14 @@ export default function Header() {
           <Link href="/lobbies">Lobbies</Link>
         </Button>
       </section>
-      <section className="z-10">
+      <section className="z-10 gap-5">
+        <Button size="default" asChild>
+          <Link href="/sign-in">Log ind</Link>
+        </Button>
+        <Button size="default" asChild>
+          <Link href="/sign-up">Opret bruger</Link>
+        </Button>
+        s
         <ThemeToggle />
       </section>
     </header>
