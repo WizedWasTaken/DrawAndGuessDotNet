@@ -120,7 +120,6 @@ namespace DrawAndGuess.DataAccess.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    Password = table.Column<string>(type: "text", nullable: true),
                     StatisticId = table.Column<int>(type: "integer", nullable: true),
                     LobbyId = table.Column<int>(type: "integer", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

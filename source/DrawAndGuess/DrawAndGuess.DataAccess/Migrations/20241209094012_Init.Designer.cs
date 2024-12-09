@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DrawAndGuess.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241207002852_Init")]
+    [Migration("20241209094012_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -413,10 +413,6 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 

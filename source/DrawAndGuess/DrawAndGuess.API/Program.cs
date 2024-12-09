@@ -1,7 +1,10 @@
 using DrawAndGuess.DataAccess;
 using DrawAndGuess.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DrawAndGuess.API
 {
@@ -60,9 +63,36 @@ namespace DrawAndGuess.API
                         .MapEnum<LobbyStatus>("lobbyStatus")
                 ));
 
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+            });
+
+
             // Auth
-            builder.Services.AddAuthentication();
-            builder.Services.AddIdentityApiEndpoints<Player>()
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+            });
+            builder.Services.AddIdentity<Player, Role>()
                 .AddEntityFrameworkStores<DataContext>();
 
             // Cors
@@ -89,15 +119,38 @@ namespace DrawAndGuess.API
 
             app.UseHttpsRedirection();
 
-            app.MapIdentityApi<Player>();
+            //app.MapIdentityApi<Player>();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
 
             app.UseCors("CorsPolicy");
 
+            SeedRoles(app);
+
             app.Run();
         }
+
+        public static void SeedRoles(WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())  // Create a scope for scoped services
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+                var roles = new[] { "Admin", "Player" };
+
+                foreach (var role in roles)
+                {
+                    var roleExist = roleManager.RoleExistsAsync(role).Result;
+                    if (!roleExist)
+                    {
+                        var roleResult = roleManager.CreateAsync(new Role { Name = role }).Result;
+                    }
+                }
+            }
+        }
+
+
     }
 }

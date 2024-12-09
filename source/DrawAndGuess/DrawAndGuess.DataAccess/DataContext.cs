@@ -11,7 +11,7 @@ namespace DrawAndGuess.DataAccess
         {
         }
 
-        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Word> Words { get; set; }
