@@ -1,3 +1,4 @@
+import SignInForm from "@/components/form/SignInForm";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +12,7 @@ import Link from "next/link";
 
 export default function SignUpPage() {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Opret bruger</CardTitle>
       </CardHeader>
@@ -19,6 +20,7 @@ export default function SignUpPage() {
         <CardDescription>
           <p>Opret en bruger for at kunne deltage i spillet.</p>
         </CardDescription>
+        <SignInForm />
       </CardContent>
       <CardFooter>
         <p className="text-sm text-muted-foreground ">

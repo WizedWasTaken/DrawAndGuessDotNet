@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export default function SignUpPage() {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Opret bruger</CardTitle>
       </CardHeader>
