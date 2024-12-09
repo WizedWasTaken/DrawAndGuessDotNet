@@ -18,34 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+// Schema
+import { signUpSchema } from "@/lib/schemas/authSchemas";
+
 interface SignUpFormProps {
   className?: string;
 }
 
 export default function SignUpForm({ className = "" }: SignUpFormProps) {
-  const formSchema = z
-    .object({
-      name: z
-        .string()
-        .min(3, { message: "Navnet skal være mindst 3 tegn langt" })
-        .max(30, { message: "Navnet må ikke være længere end 30 tegn" }),
-      username: z
-        .string()
-        .min(3, { message: "Brugernavnet skal være mindst 3 tegn langt" })
-        .max(30, { message: "Brugernavnet må ikke være længere end 30 tegn" }),
-      email: z.string().email({ message: "Indtast en gyldig emailadresse" }),
-      password: z
-        .string()
-        .min(6, { message: "Adgangskoden skal være mindst 6 tegn lang" }),
-      repeatPassword: z.string(),
-    })
-    .refine((data) => data.password === data.repeatPassword, {
-      message: "Adgangskoderne skal være ens",
-      path: ["repeatPassword"],
-    });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       username: "",
@@ -56,7 +38,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof signUpSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);

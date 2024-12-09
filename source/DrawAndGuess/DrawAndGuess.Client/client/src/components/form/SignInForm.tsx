@@ -17,24 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { signInSchema } from "@/lib/schemas/authSchemas";
 
 interface SignUpFormProps {
   className?: string;
 }
 
 export default function SignUpForm({ className = "" }: SignUpFormProps) {
-  const formSchema = z.object({
-    username: z
-      .string()
-      .min(3, { message: "Brugernavnet skal være mindst 3 tegn langt" })
-      .max(30, { message: "Brugernavnet må ikke være længere end 30 tegn" }),
-    password: z
-      .string()
-      .min(6, { message: "Adgangskoden skal være mindst 6 tegn lang" }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -42,7 +33,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof signInSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
