@@ -63,15 +63,6 @@ namespace DrawAndGuess.API
                         .MapEnum<LobbyStatus>("lobbyStatus")
                 ));
 
-            builder.Services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-            });
-
 
             // Auth
             builder.Services.AddAuthentication(options =>
@@ -92,8 +83,21 @@ namespace DrawAndGuess.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
             });
-            builder.Services.AddIdentity<Player, Role>()
-                .AddEntityFrameworkStores<DataContext>();
+
+            builder.Services.AddIdentityCore<Player>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+            })
+            .AddRoles<Role>()
+            .AddEntityFrameworkStores<DataContext>()
+            .AddSignInManager<SignInManager<Player>>() // Add this line to register SignInManager
+            .AddDefaultTokenProviders();
+
+
 
             // Cors
             builder.Services.AddCors(options =>
@@ -109,6 +113,8 @@ namespace DrawAndGuess.API
             builder.Services.AddScoped<IRepository<Player>, Repository<Player>>();
 
             var app = builder.Build();
+
+            SeedRoles(app);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -127,8 +133,6 @@ namespace DrawAndGuess.API
             app.MapControllers();
 
             app.UseCors("CorsPolicy");
-
-            SeedRoles(app);
 
             app.Run();
         }

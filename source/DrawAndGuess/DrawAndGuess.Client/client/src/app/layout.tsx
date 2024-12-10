@@ -3,11 +3,18 @@ import "./globals.scss";
 
 // Contexts
 import { SignalRProvider } from "@/lib/contexts/SignalRContext";
+
+// Providers
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
+import AuthProvider from "@/lib/providers/AuthProvider";
+
+// Components
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TechnicalInformation from "@/components/TechnicalInformation";
-import AuthProvider from "@/lib/providers/AuthProvider";
+
+// Toaster
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: "Tegn og gæt",
@@ -24,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`antialiased min-h-screen flex flex-grow flex-col dark`}>
+    <html lang="en" suppressHydrationWarning style={{ colorScheme: "dark" }}>
+      <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
         <AuthProvider>
           <SignalRProvider url={SIGNALR_URL}>
             <ThemeProvider
@@ -40,6 +47,7 @@ export default function RootLayout({
               <div className="fixed bottom-0 p-5">
                 <TechnicalInformation />
               </div>
+              <Toaster />
             </ThemeProvider>
           </SignalRProvider>
         </AuthProvider>

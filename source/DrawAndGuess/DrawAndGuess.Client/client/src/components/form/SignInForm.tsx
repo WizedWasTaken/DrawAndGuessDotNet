@@ -24,12 +24,14 @@ import { useRouter } from "next/navigation";
 
 // Auth
 import { signIn } from "next-auth/react";
+import { toast } from "@/lib/hooks/use-toast";
 
-interface SignUpFormProps {
+interface SignInFormProps {
   className?: string;
+  callbackUrl?: string;
 }
 
-export default function SignUpForm({ className = "" }: SignUpFormProps) {
+export default function SignInForm({ className = "", callbackUrl = "/profile" }: SignInFormProps) {
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -40,24 +42,28 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
 
   const router = useRouter();
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof signInSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-
     const res = await signIn("credentials", {
       username: values.username,
       password: values.password,
       redirect: false,
+      callbackUrl: callbackUrl
     });
 
     if (res?.error) {
-      console.error("Error signing in:", res.error);
+      // Handle error if sign-in fails
+      console.error("Sign-in failed:", res.error);
+      toast({
+        title: "Log Ind",
+        description: "Forkert brugernavn eller adgangskode. Prøv igen.",
+      });
     }
 
     if (res?.ok) {
-      router.push("/test");
+      toast({
+        title: "Log Ind",
+        description: "Du er nu logget ind. Hav det sjovt 🎉🎉",
+      });
     }
   }
 

@@ -1,5 +1,8 @@
+'use client';
+
+// Components
+
 import SignInForm from "@/components/form/SignInForm";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,9 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+// Navigation
 import Link from "next/link";
 
-export default function SignUpPage() {
+export default function SignInPage() {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -25,7 +30,7 @@ export default function SignUpPage() {
       <CardFooter>
         <p className="text-sm text-muted-foreground ">
           Har du ikke en konto?{" "}
-          <Link href="/sign-up" className="">
+          <Link href="/sign-up">
             Opret en her
           </Link>
         </p>

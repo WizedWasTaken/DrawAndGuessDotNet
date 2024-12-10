@@ -3,42 +3,37 @@ import type { NextAuthOptions } from "next-auth";
 // Providers
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const env = process.env.NODE_ENV;
-
-export const options: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "email", placeholder: "user@example.com" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (credentials === null) {
-          throw new Error("No credentials provided");
+        if (credentials == undefined || credentials == null) {
+          return null;
         }
+        // Make a POST request to the custom backend
+        const res = await fetch("https://localhost:7202/api/Auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
+          }),
+        });
 
-        console.log("Credentials: ", credentials);
+        const user = await res.json();
 
-        // In a real application you might look up the user in your database.
-        // using our .NET Identity APi
-        const user = {
-          id: "1",
-          username: "test",
-          email: "test@test-mail.com",
-          password: "test",
-        };
-
-        // Integrate this with the .NET Identity API
-        if (
-          credentials &&
-          user.username === credentials.username &&
-          user.password === credentials.password
-        ) {
+        // If the login is successful, return the user object
+        if (res.ok && user) {
           return user;
-        } else {
-          throw new Error("Invalid credentials");
         }
+
+        // Return null if the authentication fails
+        return null;
       },
     }),
   ],
@@ -46,5 +41,18 @@ export const options: NextAuthOptions = {
   pages: {
     signIn: "/sign-in",
     // signOut: "/sign-out",
+  },
+  callbacks: {
+    async session({ session, token }: { session: any; token: any }) {
+      // Include additional information in the session
+      session.user = token.user;
+      return session;
+    },
+    async jwt({ token, user }: { token: any; user: any }) {
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
   },
 };

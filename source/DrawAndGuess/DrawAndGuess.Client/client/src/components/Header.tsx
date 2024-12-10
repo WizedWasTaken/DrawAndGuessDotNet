@@ -20,9 +20,6 @@ export default function Header() {
         <Button size="default" asChild>
           <Link href="/lobbies">Lobbies</Link>
         </Button>
-        <Button size="default" asChild>
-          <Link href="/test">Test</Link>
-        </Button>
       </section>
       <section className="z-10 flex gap-5">
         {session ? (

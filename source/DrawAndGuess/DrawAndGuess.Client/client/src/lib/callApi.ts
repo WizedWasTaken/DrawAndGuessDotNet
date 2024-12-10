@@ -15,6 +15,8 @@ export async function callApiAsync<T>(
   const response = await fetch(url, options);
   const data = await response.json();
 
+  console.log(data);
+
   console.log("response", data);
   return {
     data,
