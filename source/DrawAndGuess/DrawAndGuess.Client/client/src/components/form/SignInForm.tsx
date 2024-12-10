@@ -19,6 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/lib/schemas/authSchemas";
 
+// Client Navigation 
+import { navigation }
+
+// Auth
+import { signIn } from "next-auth/react";
+
 interface SignUpFormProps {
   className?: string;
 }
@@ -33,10 +39,24 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signInSchema>) {
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+
+    const res = await signIn("credentials", {
+      username: values.username,
+      password: values.password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      console.error("Error signing in:", res.error);
+    }
+
+    if (res?.ok) {
+      console.log("Signed in successfully");
+    }
   }
 
   return (

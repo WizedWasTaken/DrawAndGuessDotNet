@@ -18,6 +18,10 @@ export const options: NextAuthOptions = {
           throw new Error("No credentials provided");
         }
 
+        console.log("Credentials: ", credentials);
+
+        // In a real application you might look up the user in your database.
+        // using our .NET Identity APi
         const user = {
           id: "1",
           username: "test",
@@ -25,6 +29,7 @@ export const options: NextAuthOptions = {
           password: "test",
         };
 
+        // Integrate this with the .NET Identity API
         if (
           credentials &&
           user.username === credentials.username &&
@@ -38,7 +43,8 @@ export const options: NextAuthOptions = {
     }),
   ],
   secret: process.env.SECRET,
-  //   pages: {
-  //     signIn: "/sign-in",
-  //   },
+  pages: {
+    signIn: "/sign-in",
+    // signOut: "/sign-out",
+  },
 };

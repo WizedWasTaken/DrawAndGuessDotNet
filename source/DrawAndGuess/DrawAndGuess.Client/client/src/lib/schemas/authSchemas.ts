@@ -6,14 +6,20 @@ import { z } from "zod";
  * @type {z.ZodObject}
  * @see
  */
+// const signInSchema = z.object({
+//   username: z
+//     .string()
+//     .min(3, { message: "Brugernavnet skal være mindst 3 tegn langt" })
+//     .max(30, { message: "Brugernavnet må ikke være længere end 30 tegn" }),
+//   password: z
+//     .string()
+//     .min(6, { message: "Adgangskoden skal være mindst 6 tegn lang" }),
+// });
+
+// Test SignInSchema
 const signInSchema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Brugernavnet skal være mindst 3 tegn langt" })
-    .max(30, { message: "Brugernavnet må ikke være længere end 30 tegn" }),
-  password: z
-    .string()
-    .min(6, { message: "Adgangskoden skal være mindst 6 tegn lang" }),
+  username: z.string(),
+  password: z.string(),
 });
 
 /**
