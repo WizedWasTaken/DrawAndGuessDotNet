@@ -19,8 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/lib/schemas/authSchemas";
 
-// Client Navigation 
-import { navigation }
+// Client Navigation
+import { useRouter } from "next/navigation";
 
 // Auth
 import { signIn } from "next-auth/react";
@@ -37,6 +37,8 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
       password: "",
     },
   });
+
+  const router = useRouter();
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof signInSchema>) {
@@ -55,7 +57,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
     }
 
     if (res?.ok) {
-      console.log("Signed in successfully");
+      router.push("/test");
     }
   }
 
