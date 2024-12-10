@@ -1,4 +1,5 @@
-﻿using DrawAndGuess.Entities;
+﻿using DrawAndGuess.DataAccess;
+using DrawAndGuess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,12 +19,14 @@ namespace DrawAndGuess.API.Controllers
         private readonly UserManager<Player> _userManager;
         private readonly SignInManager<Player> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IRepository<Player> playerRepository;
 
-        public AuthController(UserManager<Player> userManager, SignInManager<Player> signInManager, IConfiguration configuration)
+        public AuthController(UserManager<Player> userManager, SignInManager<Player> signInManager, IConfiguration configuration, IRepository<Player> playerRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            this.playerRepository = playerRepository;
         }
 
         [HttpPost("register")]
@@ -44,10 +47,10 @@ namespace DrawAndGuess.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            //var roleResult = await _userManager.AddToRoleAsync(player, "Player");
+            var roleResult = await _userManager.AddToRoleAsync(player, "Player");
 
-            //if (!roleResult.Succeeded)
-            //    return BadRequest(roleResult.Errors);
+            if (!roleResult.Succeeded)
+                return BadRequest(roleResult.Errors);
 
             return Ok(new { Message = "User registered successfully!" });
         }
@@ -66,10 +69,22 @@ namespace DrawAndGuess.API.Controllers
             if (!isPasswordValid)
                 return Unauthorized("Invalid username or password.");
 
-            var token = GenerateJwtToken(user);
-            return Ok(new { Token = token });
-        }
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                Role r = new(role);
+                user.Roles.Add(r);
+            }
 
+            var token = GenerateJwtToken(user);
+
+            // Send both the token and user info
+            return Ok(new
+            {
+                user = user,
+                token = token // Correctly separated by a comma
+            });
+        }
 
         private string GenerateJwtToken(Player user)
         {

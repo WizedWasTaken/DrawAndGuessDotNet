@@ -8,7 +8,7 @@ namespace DrawAndGuess.Entities
         #region Fields
 
         private string name;
-        private Role role;
+        private List<Role> role;
         private Statistic? statistic;
 
         #endregion Fields
@@ -23,10 +23,10 @@ namespace DrawAndGuess.Entities
             Name = name;
         }
 
-        public Player(string name, Role role)
+        public Player(string name, List<Role> role)
         {
             Name = name;
-            Role = role;
+            Roles = role;
         }
 
         public Player(string name, Statistic statistic)
@@ -35,10 +35,10 @@ namespace DrawAndGuess.Entities
             Statistic = statistic;
         }
 
-        public Player(string name, Role role, Statistic statistic)
+        public Player(string name, List<Role> role, Statistic statistic)
         {
             Name = name;
-            Role = role;
+            Roles = role;
             Statistic = statistic;
         }
 
@@ -52,7 +52,7 @@ namespace DrawAndGuess.Entities
             set { name = value; }
         }
 
-        public Role Role
+        public List<Role> Roles
         {
             get { return role; }
             set { role = value; }

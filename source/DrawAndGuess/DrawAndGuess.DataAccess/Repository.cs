@@ -16,7 +16,7 @@
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(string id)
         {
             var entity = await GetById(id);
             await Delete(entity);
@@ -27,7 +27,7 @@
             return _context.Set<T>().ToList();
         }
 
-        public async Task<T> GetById(int id)
+        public async Task<T> GetById(string id)
         {
             return await _context.Set<T>().FindAsync(id);
         }

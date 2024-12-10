@@ -401,6 +401,11 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("text");
+
+                    b.HasIndex("PlayerId");
+
                     b.HasDiscriminator().HasValue("Role");
                 });
 
@@ -415,15 +420,10 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
-
                     b.Property<int?>("StatisticId")
                         .HasColumnType("integer");
 
                     b.HasIndex("LobbyId");
-
-                    b.HasIndex("RoleId");
 
                     b.HasIndex("StatisticId");
 
@@ -535,21 +535,22 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DrawAndGuess.Entities.Role", b =>
+                {
+                    b.HasOne("DrawAndGuess.Entities.Player", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("PlayerId");
+                });
+
             modelBuilder.Entity("DrawAndGuess.Entities.Player", b =>
                 {
                     b.HasOne("DrawAndGuess.Entities.Lobby", null)
                         .WithMany("Players")
                         .HasForeignKey("LobbyId");
 
-                    b.HasOne("DrawAndGuess.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-
                     b.HasOne("DrawAndGuess.Entities.Statistic", "Statistic")
                         .WithMany()
                         .HasForeignKey("StatisticId");
-
-                    b.Navigation("Role");
 
                     b.Navigation("Statistic");
                 });
@@ -572,6 +573,11 @@ namespace DrawAndGuess.DataAccess.Migrations
             modelBuilder.Entity("DrawAndGuess.Entities.Statistic", b =>
                 {
                     b.Navigation("Points");
+                });
+
+            modelBuilder.Entity("DrawAndGuess.Entities.Player", b =>
+                {
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

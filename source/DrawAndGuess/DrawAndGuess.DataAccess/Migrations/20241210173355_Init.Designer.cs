@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DrawAndGuess.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241209094012_Init")]
+    [Migration("20241210173355_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -28,24 +28,6 @@ namespace DrawAndGuess.DataAccess.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "points", new[] { "one", "three", "two" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "wordDifficulty", new[] { "easy", "hard", "medium" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("DrawAndGuess.Entities.Admin", b =>
-                {
-                    b.Property<int>("AdminId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AdminId"));
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("AdminId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("DrawAndGuess.Entities.Game", b =>
                 {
@@ -209,6 +191,11 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -224,6 +211,10 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityRole");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -405,6 +396,22 @@ namespace DrawAndGuess.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DrawAndGuess.Entities.Role", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("text");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasDiscriminator().HasValue("Role");
+                });
+
             modelBuilder.Entity("DrawAndGuess.Entities.Player", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -424,15 +431,6 @@ namespace DrawAndGuess.DataAccess.Migrations
                     b.HasIndex("StatisticId");
 
                     b.HasDiscriminator().HasValue("Player");
-                });
-
-            modelBuilder.Entity("DrawAndGuess.Entities.Admin", b =>
-                {
-                    b.HasOne("DrawAndGuess.Entities.Player", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DrawAndGuess.Entities.Game", b =>
@@ -540,6 +538,13 @@ namespace DrawAndGuess.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DrawAndGuess.Entities.Role", b =>
+                {
+                    b.HasOne("DrawAndGuess.Entities.Player", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("PlayerId");
+                });
+
             modelBuilder.Entity("DrawAndGuess.Entities.Player", b =>
                 {
                     b.HasOne("DrawAndGuess.Entities.Lobby", null)
@@ -571,6 +576,11 @@ namespace DrawAndGuess.DataAccess.Migrations
             modelBuilder.Entity("DrawAndGuess.Entities.Statistic", b =>
                 {
                     b.Navigation("Points");
+                });
+
+            modelBuilder.Entity("DrawAndGuess.Entities.Player", b =>
+                {
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

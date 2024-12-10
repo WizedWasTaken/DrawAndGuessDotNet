@@ -63,7 +63,6 @@ namespace DrawAndGuess.API
                         .MapEnum<LobbyStatus>("lobbyStatus")
                 ));
 
-
             // Auth
             builder.Services.AddAuthentication(options =>
             {
@@ -92,12 +91,10 @@ namespace DrawAndGuess.API
                 options.Password.RequireUppercase = true;
                 options.Password.RequireLowercase = true;
             })
-            .AddRoles<Role>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<DataContext>()
             .AddSignInManager<SignInManager<Player>>() // Add this line to register SignInManager
             .AddDefaultTokenProviders();
-
-
 
             // Cors
             builder.Services.AddCors(options =>
@@ -114,8 +111,6 @@ namespace DrawAndGuess.API
 
             var app = builder.Build();
 
-            SeedRoles(app);
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -125,36 +120,30 @@ namespace DrawAndGuess.API
 
             app.UseHttpsRedirection();
 
-            //app.MapIdentityApi<Player>();
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
 
-            app.UseCors("CorsPolicy");
-
             app.Run();
         }
 
-        public static void SeedRoles(WebApplication app)
+        private async Task CreateRoles(IApplicationBuilder app)
         {
-            using (var scope = app.Services.CreateScope())  // Create a scope for scoped services
-            {
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-                var roles = new[] { "Admin", "Player" };
+            var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = app.ApplicationServices.GetRequiredService<UserManager<Player>>();
 
-                foreach (var role in roles)
+            string[] roleNames = { "Admin", "Player" }; // Define the roles you want
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
                 {
-                    var roleExist = roleManager.RoleExistsAsync(role).Result;
-                    if (!roleExist)
-                    {
-                        var roleResult = roleManager.CreateAsync(new Role { Name = role }).Result;
-                    }
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
         }
-
-
     }
 }
