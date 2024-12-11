@@ -19,7 +19,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Make a POST request to the custom backend
-        const res = await fetch("https://localhost:7202/api/Auth/login", {
+        const url = process.env.NEXTAUTH_URL;
+        if (!url) {
+          throw new Error("NEXTAUTH_URL environment variable is not defined");
+        }
+        
+        const res = await fetch(`${url}/api/Auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
