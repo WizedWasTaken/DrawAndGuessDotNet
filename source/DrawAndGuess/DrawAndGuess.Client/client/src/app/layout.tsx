@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning style={{ colorScheme: "dark" }}>
-      <body className={`antialiased min-h-screen flex flex-grow flex-col`}>
+      <body className={`bg-gradient-to-br from-background to-secondary antialiased min-h-screen flex flex-grow flex-col`}>
         <AuthProvider>
           <SignalRProvider url={SIGNALR_URL}>
             <ThemeProvider
