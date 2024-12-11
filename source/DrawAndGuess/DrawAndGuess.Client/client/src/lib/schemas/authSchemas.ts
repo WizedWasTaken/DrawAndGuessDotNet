@@ -41,7 +41,11 @@ const signUpSchema = z
     email: z.string().email({ message: "Indtast en gyldig emailadresse" }),
     password: z
       .string()
-      .min(6, { message: "Adgangskoden skal være mindst 6 tegn lang" }),
+      .min(8, { message: "Adgangskoden skal være mindst 8 tegn lang" })
+      .regex(/[0-9]/, { message: "Adgangskoden skal indeholde mindst ét tal" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Adgangskoden skal indeholde mindst ét ikke-alfanumerisk tegn" })
+      .regex(/[A-Z]/, { message: "Adgangskoden skal indeholde mindst ét stort bogstav" })
+      .regex(/[a-z]/, { message: "Adgangskoden skal indeholde mindst ét lille bogstav" }),
     repeatPassword: z.string(),
   })
   .refine((data) => data.password === data.repeatPassword, {
