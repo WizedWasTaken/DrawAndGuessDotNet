@@ -14,7 +14,7 @@ RUN npm install --force
 COPY . .
 
 # Copy the .env file to the container
-COPY .env .env
+COPY server.env .env
 
 # Build the Next.js application
 RUN npm run build
