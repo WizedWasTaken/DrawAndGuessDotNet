@@ -10,6 +10,6 @@ namespace DrawAndGuess.Interfaces
 
         Task<Lobby> CreateLobby(string title);
 
-        Task<Lobby> JoinLobby(int lobbyId);
+        Task<Lobby> JoinLobby(int lobbyId, Player player);
     }
 }

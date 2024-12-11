@@ -11,12 +11,12 @@ namespace DrawAndGuess.SignalR.Hubs
         private static List<Lobby> ActiveLobbies = new();
 
         // Add a static list of lobbies
-        private readonly Lobby lobby1 = new Lobby(1, "Cheferne", new List<Player> { new Player("Noah A."), new Player("Noah O."), new Player("Keso Master 9000") }, LobbyStatus.Waiting);
+        private readonly Lobby lobby1 = new Lobby(1, "Cheferne", new List<Player> { }, LobbyStatus.Waiting);
 
-        private readonly Lobby lobby2 = new Lobby(2, "Chefens Kontor", new List<Player> { new Player("Simon P.") }, LobbyStatus.InGame);
-        private readonly Lobby lobby3 = new Lobby(3, "Kontoret", new List<Player> { new Player("Simon P.") }, LobbyStatus.InGame);
-        private readonly Lobby lobby4 = new Lobby(4, "Kontoret", new List<Player> { new Player("Simon P.") }, LobbyStatus.InGame);
-        private readonly Lobby lobby5 = new Lobby(5, "Kontoret", new List<Player> { new Player("Simon P.") }, LobbyStatus.Ended);
+        private readonly Lobby lobby2 = new Lobby(2, "Chefens Kontor", new List<Player> { }, LobbyStatus.InGame);
+        private readonly Lobby lobby3 = new Lobby(3, "Kontoret", new List<Player> { }, LobbyStatus.InGame);
+        private readonly Lobby lobby4 = new Lobby(4, "Kontoret", new List<Player> { }, LobbyStatus.InGame);
+        private readonly Lobby lobby5 = new Lobby(5, "Kontoret", new List<Player> { }, LobbyStatus.Ended);
 
         public LobbyHub()
         {
@@ -93,11 +93,9 @@ namespace DrawAndGuess.SignalR.Hubs
             return lobby;
         }
 
-        public async Task<Lobby> JoinLobby(int lobbyId)
+        public async Task<Lobby> JoinLobby(int lobbyId, Player player)
         {
             var connectionId = Context.ConnectionId;
-
-            var player = ConnectedClients[connectionId];
 
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 

@@ -24,7 +24,7 @@ export default function Header() {
         </section>
       )}
       <section className="z-10 flex gap-5">
-        {session ? (
+        {!session ? (
           <>
             <Button size="default" asChild>
               <Link href="/sign-in">Log ind</Link>

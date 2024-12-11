@@ -13,6 +13,7 @@ import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/hooks/use-toast";
 import { LobbyStatus } from "@/entities/lobby-status";
+import { useSession } from "next-auth/react";
 
 /**
  * The LobbiesTable component
@@ -22,6 +23,7 @@ export function LobbiesTable() {
   const { connection, connectionState, invoke } = useSignalR();
   const [lobbies, setLobbies] = React.useState<Lobby[]>([]);
   const router = useRouter();
+  const session = useSession();
 
   // Listen for changes to the lobbies
   useSignalRListener("lobbyCreated", (lobby: Lobby) => {
@@ -79,7 +81,7 @@ export function LobbiesTable() {
         title: "Lobby",
         description: "Finder lobbyen."
       })
-      const lobbyToJoin: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId);
+      const lobbyToJoin: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId, session);
 
       if (!lobbyToJoin) {
         throw new Error("Kunne ikke finde lobbyen");
