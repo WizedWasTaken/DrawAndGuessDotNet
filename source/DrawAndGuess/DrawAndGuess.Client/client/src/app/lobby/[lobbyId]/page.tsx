@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lobby } from "@/entities/lobby";
+import { useSignalR } from "@/lib/hooks/UseSignalR";
+import { useSession } from "next-auth/react";
 
 interface ChatMessage {
     id: string;
@@ -23,6 +25,8 @@ export default function LobbyPage() {
     const [newMessage, setNewMessage] = useState("");
     const [lobby, setLobby] = useState<Lobby | undefined>();
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const { connection } = useSignalR();
+    const session = useSession();
 
     // If lobby ID doesn't exist.
     if (!lobbyId) {
@@ -30,13 +34,33 @@ export default function LobbyPage() {
     }
 
     useEffect(() => {
-        // Simulating fetching players and chat messages
-        setPlayers(["Player 1", "Player 2", "Player 3"]);
         setChatMessages([
             { id: "1", sender: "System", content: "Velkommen til lobbyen!", timestamp: new Date() },
             { id: "2", sender: "System", content: "Gør dig klar til at tegne eller gætte!", timestamp: new Date() }
         ]);
     }, []);
+
+    useEffect(() => {
+        const fetchLobbyData = async () => {
+            const lobbyData = await connection?.invoke<Lobby>("GetCurrentLobby");
+            setLobby(lobbyData);
+        };
+
+        fetchLobbyData();
+    }, [connection]);
+
+    useEffect(() => {
+        const handleBeforeUnload = async () => {
+            await connection?.invoke("LeaveLobby", parseInt(lobbyId), session.data?.user);
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            handleBeforeUnload();
+        };
+    }, [connection]);
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });

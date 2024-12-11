@@ -81,7 +81,7 @@ export function LobbiesTable() {
         title: "Lobby",
         description: "Finder lobbyen."
       })
-      const lobbyToJoin: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId, session);
+      const lobbyToJoin: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId, session.data?.user);
 
       if (!lobbyToJoin) {
         throw new Error("Kunne ikke finde lobbyen");

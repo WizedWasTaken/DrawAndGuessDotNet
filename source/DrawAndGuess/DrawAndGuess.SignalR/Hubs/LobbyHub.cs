@@ -111,13 +111,11 @@ namespace DrawAndGuess.SignalR.Hubs
             return lobby;
         }
 
-        public async Task LeaveLobby(int lobbyId)
+        public async Task LeaveLobby(int lobbyId, Player player)
         {
             var connectionId = Context.ConnectionId;
 
-            var player = ConnectedClients[connectionId];
-
-            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.Players.Contains(player));
 
             if (lobby == null)
             {
@@ -127,6 +125,17 @@ namespace DrawAndGuess.SignalR.Hubs
             lobby.Players.Remove(player);
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
+        }
+
+        public Task<Lobby> GetCurrentLobby()
+        {
+            var connectionId = Context.ConnectionId;
+
+            var player = ConnectedClients[connectionId];
+
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.Players.Contains(player));
+
+            return Task.FromResult(lobby);
         }
     }
 }
