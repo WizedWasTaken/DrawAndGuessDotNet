@@ -59,10 +59,10 @@ export default function TechnicalInformation() {
             ℹ
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
+        <DialogContent className="bg-zinc-100 max-h-3/4 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
           <DialogHeader>
             <DialogTitle>Informationer</DialogTitle>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
               <section className="flex flex-col mt-10 gap-6">
                 <p>
                   Dette projekt er lavet af Noah A. Nielsen. Koden er

@@ -2,7 +2,7 @@ import { changelogs } from "@/lib/changelog";
 
 export default function Changelog() {
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-3">
       <h2 className="text-2xl font-bold">Changelog</h2>
       {changelogs && changelogs.length > 0 ? (
         <article className="space-y-4 max-h-96 overflow-auto">
