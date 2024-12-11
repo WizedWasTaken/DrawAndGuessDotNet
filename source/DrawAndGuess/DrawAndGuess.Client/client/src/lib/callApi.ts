@@ -1,5 +1,7 @@
+import { getSession } from "next-auth/react";
+
 export type ApiResponse<T> = {
-  data: T;
+  data: T | null;
   isSuccessful: boolean;
   status: number;
   statusText: string;
@@ -11,9 +13,21 @@ export async function callApiAsync<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
+  const session = await getSession();
+  const token = session?.accessToken;
+
   const url = `${baseUrl}${endpoint}`;
-  const response = await fetch(url, options);
+  const headers = {
+    ...options?.headers,
+    Authorization: `Bearer ${token}`,
+  };
+
+  console.log("url", url);
+
+  const response = await fetch(url, { ...options, headers });
   const data = await response.json();
+
+  console.log(data);
 
   console.log("response", data);
   return {
@@ -24,28 +38,43 @@ export async function callApiAsync<T>(
   };
 }
 
-export function callApi<T>(
+export async function callApi<T>(
   endpoint: string,
-  options?: RequestInit
-): ApiResponse<T> {
-  const url = `${baseUrl}${endpoint}`;
-  const xhr = new XMLHttpRequest();
-  xhr.open(options?.method || "GET", url, false);
-  if (options?.headers) {
-    Object.keys(options.headers).forEach((key) => {
-      xhr.setRequestHeader(
-        key,
-        (options.headers as Record<string, string>)[key]
-      );
-    });
-  }
-  xhr.send(options?.body ? JSON.stringify(options.body) : null);
+  options: RequestInit = {}
+): Promise<ApiResponse<T>> {
+  const session = await getSession();
+  const token = session?.accessToken;
 
-  const data = JSON.parse(xhr.responseText);
-  return {
-    data,
-    isSuccessful: xhr.status >= 200 && xhr.status < 300,
-    status: xhr.status,
-    statusText: xhr.statusText,
+  const url = `${baseUrl}${endpoint}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json", // Ensure the server interprets the request as JSON
+    ...options.headers, // Merge custom headers
   };
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    const data = await response.json();
+
+    return {
+      data,
+      isSuccessful: response.ok, // Checks for status codes in the 200–299 range
+      status: response.status,
+      statusText: response.statusText,
+    };
+  } catch (error) {
+    console.error("API call failed:", error);
+
+    return {
+      data: null,
+      isSuccessful: false,
+      status: 0,
+      statusText: "Network error",
+    };
+  }
 }
+

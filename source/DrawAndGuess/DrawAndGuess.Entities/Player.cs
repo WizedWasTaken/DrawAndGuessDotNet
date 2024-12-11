@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace DrawAndGuess.Entities
 {
-    public class Player
+    public class Player : IdentityUser
     {
         #region Fields
 
-        private int playerId;
         private string name;
-        private string password;
-        private string email;
+        private List<Role> role;
         private Statistic? statistic;
 
         #endregion Fields
@@ -28,20 +23,22 @@ namespace DrawAndGuess.Entities
             Name = name;
         }
 
-        public Player(string name, string password, string email, Statistic statistic)
+        public Player(string name, List<Role> role)
         {
             Name = name;
-            Password = password;
-            Email = email;
+            Roles = role;
+        }
+
+        public Player(string name, Statistic statistic)
+        {
+            Name = name;
             Statistic = statistic;
         }
 
-        public Player(int playerId, string name, string password, string email, Statistic statistic)
+        public Player(string name, List<Role> role, Statistic statistic)
         {
-            PlayerId = playerId;
             Name = name;
-            Password = password;
-            Email = email;
+            Roles = role;
             Statistic = statistic;
         }
 
@@ -49,28 +46,16 @@ namespace DrawAndGuess.Entities
 
         #region Properties
 
-        public int PlayerId
-        {
-            get { return playerId; }
-            set { playerId = value; }
-        }
-
         public string Name
         {
             get { return name; }
             set { name = value; }
         }
 
-        public string Password
+        public List<Role> Roles
         {
-            get { return password; }
-            set { password = value; }
-        }
-
-        public string Email
-        {
-            get { return email; }
-            set { email = value; }
+            get { return role; }
+            set { role = value; }
         }
 
         public Statistic? Statistic

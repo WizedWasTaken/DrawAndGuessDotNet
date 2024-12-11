@@ -6,7 +6,7 @@ namespace DrawAndGuess.Entities.TypeGen
     {
         public ProjectGenerationSpec()
         {
-            AddClass<Admin>();
+            AddClass<Role>();
             AddClass<Game>();
             AddClass<Guess>();
             AddClass<Lobby>();

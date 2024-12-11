@@ -12,9 +12,9 @@ namespace DrawAndGuess.DataAccess
 
         Task Update(T entity);
 
-        Task Delete(int id);
+        Task Delete(string id);
 
-        Task<T> GetById(int id);
+        Task<T> GetById(string id);
 
         Task<IEnumerable<T>> GetAll();
     }
