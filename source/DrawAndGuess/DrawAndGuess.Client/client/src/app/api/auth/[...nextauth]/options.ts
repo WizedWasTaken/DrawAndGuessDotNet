@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
         // Ensure the response is OK
         if (!res.ok) {
           console.log("Response not OK");
-          return null; // Authentication failed
+          throw new Error("Der skete en uventet fejl.")
         }
 
         const data = await res.json(); // Parse the response

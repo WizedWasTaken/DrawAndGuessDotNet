@@ -65,5 +65,19 @@ namespace DrawAndGuess.Entities
         }
 
         #endregion Properties
+
+        #region Methods
+
+        public override bool Equals(object obj)
+        {
+            return obj is Player other && Id == other.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id?.GetHashCode() ?? 0;
+        }
+
+        #endregion Methods
     }
 }

@@ -9,8 +9,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    <div className="flex flex-grow flex-col">
+      <main className="container flex flex-col flex-grow mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
