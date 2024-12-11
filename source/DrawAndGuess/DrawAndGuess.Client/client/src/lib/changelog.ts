@@ -24,7 +24,7 @@ export const changelogs: IChangelog[] = [
   },
   {
     version: "0.2.0",
-    date: "5/13/2024",
+    date: "5/12/2024",
     changes: [
       "Added technical information dialog",
       "Added useSignalRListener hook",
@@ -38,4 +38,17 @@ export const changelogs: IChangelog[] = [
       "Added Changelog",
     ],
   },
+  {
+    version: "0.3.0",
+    date: "11/12/2024",
+    changes: [
+      "Added security measures in the backend.",
+      "Rewrote middleware system for frontend.",
+      "Added Next-Auth library for Next.JS.",
+      "Improved security measures in frontend.",
+      "Added SignIn page.",
+      "Added SignUp page.",
+      "Added JWT access for certain critical endpoints."
+    ]
+  }
 ];
