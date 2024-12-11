@@ -20,6 +20,11 @@ import { Input } from "@/components/ui/input";
 
 // Schema
 import { signUpSchema } from "@/lib/schemas/authSchemas";
+import { toast } from "@/lib/hooks/use-toast";
+import { callApi } from "@/lib/callApi";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface SignUpFormProps {
   className?: string;
@@ -37,11 +42,76 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
     },
   });
 
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const router = useRouter();
+
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signUpSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof signUpSchema>) {
+    try {
+      setIsDisabled(true);
+      toast({
+        title: "Opret Konto",
+        description: "Opretter din konto..."
+      });
+
+      const apiRes = await callApi("/auth/Register",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            name: values.name,
+            username: values.username,
+            email: values.email,
+            password: values.password,
+          }),
+        }
+      )
+
+      if (!apiRes.isSuccessful) {
+        toast({
+          title: "Opret Konto",
+          description: "Kunne ikke oprette din konto."
+        })
+        throw new Error("Couldn't create account. ")
+      }
+
+      toast({
+        title: "Opret Konto",
+        description: "Logger dig nu ind på din konto."
+      });
+
+      const res = await signIn("credentials", {
+        username: values.username,
+        password: values.password,
+        redirect: false,
+        callbackUrl: "/profile"
+      });
+
+      if (res?.error) {
+        // Handle error if sign-in fails
+        console.error("Sign-in failed:", res.error);
+        toast({
+          title: "Log Ind",
+          description: "Forkert brugernavn eller adgangskode. Prøv igen.",
+        });
+      }
+
+      if (res?.ok) {
+        toast({
+          title: "Log Ind",
+          description: "Du er nu logget ind. Hav det sjovt 🎉🎉",
+        });
+
+        router.push("/profile");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Opret konto",
+        description: error.message
+      });
+    } finally {
+      setIsDisabled(false);
+    }
   }
 
   return (
@@ -121,7 +191,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
             )}
           />
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isDisabled}>Opret konto</Button>
       </form>
     </Form>
   );

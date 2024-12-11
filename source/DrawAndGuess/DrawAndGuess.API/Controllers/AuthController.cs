@@ -47,10 +47,10 @@ namespace DrawAndGuess.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            var roleResult = await _userManager.AddToRoleAsync(player, "Player");
+            //var roleResult = await _userManager.AddToRoleAsync(player, "Player");
 
-            if (!roleResult.Succeeded)
-                return BadRequest(roleResult.Errors);
+            //if (!roleResult.Succeeded)
+            //    return BadRequest(roleResult.Errors);
 
             return Ok(new { Message = "User registered successfully!" });
         }
@@ -69,12 +69,12 @@ namespace DrawAndGuess.API.Controllers
             if (!isPasswordValid)
                 return Unauthorized("Invalid username or password.");
 
-            var roles = await _userManager.GetRolesAsync(user);
-            foreach (var role in roles)
-            {
-                Role r = new(role);
-                user.Roles.Add(r);
-            }
+            //var roles = await _userManager.GetRolesAsync(user);
+            //foreach (var role in roles)
+            //{
+            //    Role r = new(role);
+            //    user.Roles.Add(r);
+            //}
 
             var token = GenerateJwtToken(user);
 

@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 
 export type ApiResponse<T> = {
-  data: T;
+  data: T | null;
   isSuccessful: boolean;
   status: number;
   statusText: string;
@@ -40,30 +40,41 @@ export async function callApiAsync<T>(
 
 export async function callApi<T>(
   endpoint: string,
-  options?: RequestInit
+  options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   const session = await getSession();
   const token = session?.accessToken;
 
   const url = `${baseUrl}${endpoint}`;
-  const xhr = new XMLHttpRequest();
-  xhr.open(options?.method || "GET", url, false);
-  xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-  if (options?.headers) {
-    Object.keys(options.headers).forEach((key) => {
-      xhr.setRequestHeader(
-        key,
-        (options.headers as Record<string, string>)[key]
-      );
-    });
-  }
-  xhr.send(options?.body ? JSON.stringify(options.body) : null);
-
-  const data = JSON.parse(xhr.responseText);
-  return {
-    data,
-    isSuccessful: xhr.status >= 200 && xhr.status < 300,
-    status: xhr.status,
-    statusText: xhr.statusText,
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json", // Ensure the server interprets the request as JSON
+    ...options.headers, // Merge custom headers
   };
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    const data = await response.json();
+
+    return {
+      data,
+      isSuccessful: response.ok, // Checks for status codes in the 200–299 range
+      status: response.status,
+      statusText: response.statusText,
+    };
+  } catch (error) {
+    console.error("API call failed:", error);
+
+    return {
+      data: null,
+      isSuccessful: false,
+      status: 0,
+      statusText: "Network error",
+    };
+  }
 }
+

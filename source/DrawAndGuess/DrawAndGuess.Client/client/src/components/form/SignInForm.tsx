@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 // Auth
 import { signIn } from "next-auth/react";
 import { toast } from "@/lib/hooks/use-toast";
+import { useState } from "react";
 
 interface SignInFormProps {
   className?: string;
@@ -40,30 +41,40 @@ export default function SignInForm({ className = "", callbackUrl = "/profile" }:
     },
   });
 
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
-    const res = await signIn("credentials", {
-      username: values.username,
-      password: values.password,
-      redirect: false,
-      callbackUrl: callbackUrl
-    });
+    try {
+      setIsDisabled(true);
+      const res = await signIn("credentials", {
+        username: values.username,
+        password: values.password,
+        redirect: false,
+        callbackUrl: callbackUrl
+      });
 
-    if (res?.error) {
-      // Handle error if sign-in fails
-      console.error("Sign-in failed:", res.error);
+      if (res?.error) {
+        // Handle error if sign-in fails
+        console.error("Sign-in failed:", res.error);
+        throw new Error("Forkert brugernavn eller kodeord.")
+      }
+
+      if (res?.ok) {
+        toast({
+          title: "Log Ind",
+          description: "Du er nu logget ind. Hav det sjovt 🎉🎉",
+        });
+        router.push("/profile");
+      }
+    } catch (error: any) {
       toast({
         title: "Log Ind",
-        description: "Forkert brugernavn eller adgangskode. Prøv igen.",
+        description: error.message,
       });
-    }
-
-    if (res?.ok) {
-      toast({
-        title: "Log Ind",
-        description: "Du er nu logget ind. Hav det sjovt 🎉🎉",
-      });
+    } finally {
+      setIsDisabled(false);
     }
   }
 
@@ -99,7 +110,7 @@ export default function SignInForm({ className = "", callbackUrl = "/profile" }:
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isDisabled}>Log ind</Button>
       </form>
     </Form>
   );

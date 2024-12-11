@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
         console.log("Data: ", data);
 
         // Extract user and token from the response
-        const user = data.user?.result; // Assuming 'result' contains the user object
+        const user = data.user; // Assuming 'result' contains the user object
         const accessToken = data.token; // Access token is in the 'accessToken' field
 
         // If the login is successful, return the user and token
