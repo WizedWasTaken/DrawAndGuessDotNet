@@ -1,3 +1,10 @@
+import { Brush } from "lucide-react";
+import Link from "next/link";
+
 export default function Logo() {
-  return <h1 className="select-none">✏ 𝓓𝓻𝓪𝔀 & 𝓖𝓾𝓮𝓼𝓼</h1>;
+  return (
+    <Link href="/" className="flex items-center space-x-2">
+      <Brush size={24} />
+      <span className="text-xl font-bold">Draw & Guess</span>
+    </Link>);
 }
