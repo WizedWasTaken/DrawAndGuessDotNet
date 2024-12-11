@@ -13,18 +13,23 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.debug("Checking credentials");
         if (!credentials?.username || !credentials?.password) {
           console.log("No credentials provided");
           return null; // Invalid credentials
         }
 
+        console.debug("Making URL");
         // Make a POST request to the custom backend
-        const url = process.env.NEXTAUTH_URL;
+        const url = process.env.NEXT_PUBLIC_API_URL;
         if (!url) {
+          console.error("URL doesn't exist.")
           throw new Error("NEXTAUTH_URL environment variable is not defined");
         }
         
-        const res = await fetch(`${url}/api/Auth/login`, {
+        console.log("Calling API");
+        console.log(url)
+        const res = await fetch(`${url}/Auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
