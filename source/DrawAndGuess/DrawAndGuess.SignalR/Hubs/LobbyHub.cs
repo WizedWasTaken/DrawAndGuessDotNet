@@ -30,7 +30,10 @@ namespace DrawAndGuess.SignalR.Hubs
         {
             var connectionId = Context.ConnectionId;
 
-            ConnectedClients.TryAdd(connectionId, new Player());
+            ConnectedClients.TryAdd(connectionId, new Player
+            {
+                Id = connectionId // Use ConnectionId as a unique identifier
+            });
 
             await Clients.All.SendAsync("userCountChanged", ConnectedClients.Count);
 
@@ -115,25 +118,27 @@ namespace DrawAndGuess.SignalR.Hubs
         {
             var connectionId = Context.ConnectionId;
 
-            var lobby = ActiveLobbies.FirstOrDefault(l => l.Players.Contains(player));
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
             if (lobby == null)
             {
                 return;
             }
 
-            lobby.Players.Remove(player);
+            var playerToRemove = lobby.Players.FirstOrDefault(p => p.Id == player.Id);
+            if (playerToRemove != null)
+            {
+                lobby.Players.Remove(playerToRemove);
+            }
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
+
+            return;
         }
 
-        public Task<Lobby> GetCurrentLobby()
+        public Task<Lobby> GetCurrentLobby(int lobbyId)
         {
-            var connectionId = Context.ConnectionId;
-
-            var player = ConnectedClients[connectionId];
-
-            var lobby = ActiveLobbies.FirstOrDefault(l => l.Players.Contains(player));
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
             return Task.FromResult(lobby);
         }

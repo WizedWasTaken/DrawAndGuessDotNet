@@ -151,8 +151,13 @@ export function LobbyTableColumn(
                     Tilslut
                   </DropdownMenuItem> */}
                   <DropdownMenuItem>
-                    <Button asChild>
-                      <DropdownMenuItem onClick={() => JoinLobby(lobby)}>Tilslut</DropdownMenuItem>
+                    <Button asChild className="w-full">
+                      <DropdownMenuItem
+                        className="w-full"
+                        onClick={() => JoinLobby(lobby)}
+                      >
+                        Tilslut
+                      </DropdownMenuItem>
                     </Button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
