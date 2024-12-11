@@ -151,42 +151,12 @@ export function LobbyTableColumn(
                     Tilslut
                   </DropdownMenuItem> */}
                   <DropdownMenuItem>
-                    <DialogTrigger asChild>
-                      <DropdownMenuItem>Tilslut</DropdownMenuItem>
-                    </DialogTrigger>
+                    <Button asChild>
+                      <DropdownMenuItem onClick={() => JoinLobby(lobby)}>Tilslut</DropdownMenuItem>
+                    </Button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Tilslut {lobby.title}</DialogTitle>
-                  <DialogDescription>
-                    Tilslut lobbien ved at indtaste dit brugernavn.
-                  </DialogDescription>
-                </DialogHeader>
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-
-                    const formData = new FormData(event.currentTarget);
-
-                    const username = formData.get("username") as string;
-
-                    JoinLobby(lobby);
-                    // TODO: Implement form submission
-                  }}
-                >
-                  <DialogDescription className="flex flex-col gap-5">
-                    <div>
-                      <Label>Brugernavn</Label>
-                      <Input name="username" id="username" type="text" />
-                    </div>
-                  </DialogDescription>
-                  <DialogFooter className="pt-5">
-                    <Button type="submit">Bekræft</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
             </Dialog>
           </div>
         );

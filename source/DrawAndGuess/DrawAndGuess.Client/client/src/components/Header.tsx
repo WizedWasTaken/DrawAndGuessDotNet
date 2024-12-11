@@ -13,31 +13,33 @@ export default function Header() {
       <section className="z-10">
         <Logo />
       </section>
-      <section className="absolute inset-0 flex items-center justify-center gap-5">
-        <Button size="default" asChild>
-          <Link href="/">Forside</Link>
-        </Button>
-        <Button size="default" asChild>
-          <Link href="/lobbies">Lobbies</Link>
-        </Button>
-      </section>
+      {session && (
+        <section className="absolute inset-0 flex items-center justify-center gap-5">
+          <Button size="default" asChild>
+            <Link href="/">Forside</Link>
+          </Button>
+          <Button size="default" asChild>
+            <Link href="/lobbies">Lobbies</Link>
+          </Button>
+        </section>
+      )}
       <section className="z-10 flex gap-5">
         {session ? (
-          <>
-            <Button size="default" asChild>
-              <Link href="/profile">Profil</Link>
-            </Button>
-            <Button size="default" asChild>
-              <Link href="/api/auth/signout">Log ud</Link>
-            </Button>
-          </>
-        ) : (
           <>
             <Button size="default" asChild>
               <Link href="/sign-in">Log ind</Link>
             </Button>
             <Button size="default" asChild>
               <Link href="/sign-up">Opret bruger</Link>
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button size="default" asChild>
+              <Link href="/profile">Profil</Link>
+            </Button>
+            <Button size="default" asChild>
+              <Link href="/api/auth/signout">Log ud</Link>
             </Button>
           </>
         )}

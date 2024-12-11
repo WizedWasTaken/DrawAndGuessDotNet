@@ -9,6 +9,10 @@ import LobbiesTableTop from "@/components/dataTable/lobbiesTableTop";
 import { Dialog } from "@/components/ui/dialog";
 import { useSignalR } from "@/lib/hooks/UseSignalR";
 import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "@/lib/hooks/use-toast";
+import { LobbyStatus } from "@/entities/lobby-status";
 
 /**
  * The LobbiesTable component
@@ -17,6 +21,7 @@ import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
 export function LobbiesTable() {
   const { connection, connectionState, invoke } = useSignalR();
   const [lobbies, setLobbies] = React.useState<Lobby[]>([]);
+  const router = useRouter();
 
   // Listen for changes to the lobbies
   useSignalRListener("lobbyCreated", (lobby: Lobby) => {
@@ -69,13 +74,42 @@ export function LobbiesTable() {
   };
 
   const JoinLobby = async (lobby: Lobby) => {
-    const tempLobby: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId);
+    try {
+      toast({
+        title: "Lobby",
+        description: "Finder lobbyen."
+      })
+      const lobbyToJoin: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId);
 
-    if (tempLobby) {
-      return tempLobby;
+      if (!lobbyToJoin) {
+        throw new Error("Kunne ikke finde lobbyen");
+      }
+
+      if (lobby.lobbyStatus === LobbyStatus.InGame) {
+        throw new Error("Du kan ikke tilslutte en lobby som er i et spil!")
+      }
+
+      if (lobby.lobbyStatus === LobbyStatus.Ended) {
+        throw new Error("Spillet er slut.")
+      }
+
+      toast({
+        title: "Lobby",
+        description: "Fandt lobbyen."
+      })
+
+      toast({
+        title: "Lobby",
+        description: "Sender dig til lobbyen."
+      })
+
+      router.push("lobby/" + lobbyToJoin.lobbyId)
+    } catch (error: any) {
+      toast({
+        title: "Lobby",
+        description: error.message
+      })
     }
-
-    throw new Error("Failed to join lobby");
   };
 
   return (
