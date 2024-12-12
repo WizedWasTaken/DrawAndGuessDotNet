@@ -14,7 +14,7 @@ namespace DrawAndGuess.Interfaces
 
         Task<Lobby> JoinLobby(int lobbyId, Player player);
 
-        Task<Lobby> GetCurrentLobby(int lobbyId);
+        Task<Lobby> GetCurrentLobby(int lobbyId, Player player);
 
         Task LeaveLobby(int lobbyId, Player player);
 

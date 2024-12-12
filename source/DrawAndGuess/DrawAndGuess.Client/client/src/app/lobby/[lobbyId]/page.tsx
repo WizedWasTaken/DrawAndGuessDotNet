@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lobby } from "@/entities/lobby";
 import { useSignalR } from "@/lib/hooks/UseSignalR";
@@ -58,13 +64,37 @@ export default function LobbyPage() {
   }, [connection]);
 
   useEffect(() => {
+    if (connection) {
+      connection.on("lobbyUpdated", (lobby: Lobby) => {
+        setLobby(lobby);
+      });
+
+      connection.on("lobbyUpdatedVotes", (votes: Player[]) => {
+        console.log("Votes updated:", votes);
+        setStartGameVotes(votes);
+      });
+
+      connection.on("messageReceived", receiveMessage);
+
+      return () => {
+        connection.off("lobbyUpdated");
+        connection.off("messageReceived");
+      };
+    }
+  }, [connection]);
+
+  useEffect(() => {
     const fetchLobbyData = async () => {
+      console.log("Fetching lobby data...");
+      console.log("Connection: ", connection);
+
       const lobbyData = await connection?.invoke<Lobby>(
         "GetCurrentLobby",
-        parseInt(lobbyId)
+        parseInt(lobbyId),
+        session?.data?.user
       );
 
-      console.log("lobbyData", lobbyData?.players);
+      console.log("lobbyData", lobbyData);
 
       if (!lobbyData) {
         router.push("/lobbies");
@@ -72,16 +102,19 @@ export default function LobbyPage() {
           title: "Lobby",
           description: "Du er ikke en del af denne lobby.",
         });
+      } else {
+        setLobby(lobbyData);
       }
-
-      setLobby(lobbyData);
     };
 
     fetchLobbyData();
   }, [connection]);
-
+  
   useEffect(() => {
     const handleBeforeUnload = async () => {
+      if (!connection || !session.data?.user || !lobby) {
+        return;
+      }
       toast({
         title: "Lobby",
         description: "Forlader lobbyen.",
@@ -288,16 +321,17 @@ export default function LobbyPage() {
             </Card>
           </div>
         </CardContent>
+        <CardFooter>
+          <Button
+            onClick={handleStartGame}
+            disabled={!canGameBeStarted}
+            className="w-full"
+          >
+            Start Spil ({startGameVotes.length}/
+            {lobby?.players ? Math.round(lobby.players.length / 2 + 1) : 0})
+          </Button>
+        </CardFooter>
       </Card>
-      {/* TODO: Make a check if lobby owner. */}
-      <Button
-        onClick={handleStartGame}
-        disabled={!canGameBeStarted}
-        className="w-full"
-      >
-        Start Spil ({startGameVotes.length}/
-        {lobby?.players ? Math.round(lobby.players.length / 2 + 1) : 0})
-      </Button>
     </div>
   );
 }

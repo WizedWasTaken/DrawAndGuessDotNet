@@ -90,6 +90,11 @@ namespace DrawAndGuess.SignalR.Hubs
                 return null;
             }
 
+            if (lobby.Players.Any(p => p.Id == player.Id))
+            {
+                return lobby;
+            }
+
             await Groups.AddToGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
             lobby.Players.Add(player);
 
@@ -109,6 +114,11 @@ namespace DrawAndGuess.SignalR.Hubs
                 return;
             }
 
+            if (player == null)
+            {
+                return;
+            }
+
             var playerToRemove = lobby.Players.FirstOrDefault(p => p.Id == player.Id);
             if (playerToRemove != null)
             {
@@ -121,7 +131,7 @@ namespace DrawAndGuess.SignalR.Hubs
                     voteStartLobby.Value.Remove(player);
                 }
 
-                if (voteStartLobby.Value.Count == 0)
+                if (voteStartLobby.Value.Count == 0 || voteStartLobby.Value == null)
                 {
                     VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
                 }
@@ -138,9 +148,20 @@ namespace DrawAndGuess.SignalR.Hubs
             await SendMessage(lobby.LobbyId, $"{player.UserName} forlod lobbyen.", "System");
         }
 
-        public Task<Lobby> GetCurrentLobby(int lobbyId)
+        public Task<Lobby> GetCurrentLobby(int lobbyId, Player player)
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            if (lobby == null)
+            {
+                return Task.FromResult<Lobby>(null);
+            }
+
+            if (lobby.Players.All(p => p.Id != player.Id))
+            {
+                JoinLobby(lobby.LobbyId, player);
+                return Task.FromResult(lobby);
+            }
 
             return Task.FromResult(lobby);
         }
@@ -221,6 +242,11 @@ namespace DrawAndGuess.SignalR.Hubs
         public Task<List<Message>> GetMessages(int lobbyId)
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            if (lobby == null)
+            {
+                return Task.FromResult<List<Message>>(null);
+            }
 
             return Task.FromResult(lobby.Messages);
         }

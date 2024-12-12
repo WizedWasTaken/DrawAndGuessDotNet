@@ -143,14 +143,6 @@ export function LobbyTableColumn(
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Muligheder</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {/* <DropdownMenuItem
-                    onClick={() => {
-                      const { lobbyId } = row.original;
-                      // updateLobbyStatus(lobbyId);
-                    }}
-                  >
-                    Tilslut
-                  </DropdownMenuItem> */}
                   <DropdownMenuItem>
                     <Button asChild className="w-full">
                       <DropdownMenuItem
