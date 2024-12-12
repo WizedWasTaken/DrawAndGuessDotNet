@@ -69,8 +69,8 @@ namespace DrawAndGuess.SignalR.Hubs
             var lobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { }, LobbyStatus.Waiting);
 
             ActiveLobbies.Add(lobby);
-            await JoinLobby(lobby.LobbyId, player);
             await SendMessage(lobby.LobbyId, $"{player.UserName} oprettede {lobby.Title}.", "System");
+            await JoinLobby(lobby.LobbyId, player);
 
             await Clients.All.SendAsync("lobbyCreated", lobby);
 
@@ -122,7 +122,7 @@ namespace DrawAndGuess.SignalR.Hubs
                 return;
             }
 
-            SendMessage(lobby.LobbyId, $"{player.UserName} forlod lobbyen.", "System");
+            await SendMessage(lobby.LobbyId, $"{player.UserName} forlod lobbyen.", "System");
         }
 
         public Task<Lobby> GetCurrentLobby(int lobbyId)

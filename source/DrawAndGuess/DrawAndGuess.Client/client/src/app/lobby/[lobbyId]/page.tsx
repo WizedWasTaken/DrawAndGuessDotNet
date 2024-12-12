@@ -170,8 +170,18 @@ export default function LobbyPage() {
                 <ScrollArea className="h-full">
                   <ul>
                     {lobby?.players.map((player, index) => (
-                      <li key={index} className="mb-2">
+                      <li
+                        key={index}
+                        className={`mb-2 ${
+                          player.userName === session.data?.user?.userName
+                            ? "font-bold"
+                            : ""
+                        }`}
+                      >
                         {player.userName}
+                        {session.data?.user?.userName == player.userName
+                          ? " (Dig)"
+                          : ""}
                       </li>
                     ))}
                   </ul>
