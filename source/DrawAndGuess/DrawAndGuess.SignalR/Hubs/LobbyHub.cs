@@ -89,6 +89,9 @@ namespace DrawAndGuess.SignalR.Hubs
 
             var lobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { player }, LobbyStatus.Waiting);
 
+            lobby.Messages.Add(new Message(1, "System", "Oprettede lobby.", DateTime.UtcNow));
+            lobby.Messages.Add(new Message(1, "System", "Gør dig klar til at tegne eller gætte!", DateTime.UtcNow));
+
             ActiveLobbies.Add(lobby);
 
             await Clients.All.SendAsync("lobbyCreated", lobby);
@@ -107,17 +110,17 @@ namespace DrawAndGuess.SignalR.Hubs
                 return null;
             }
 
+            await Groups.AddToGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
             lobby.Players.Add(player);
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
+            UpdateCurrentLobby(lobby.LobbyId);
 
             return lobby;
         }
 
         public async Task LeaveLobby(int lobbyId, Player player)
         {
-            var connectionId = Context.ConnectionId;
-
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
             if (lobby == null)
@@ -129,9 +132,11 @@ namespace DrawAndGuess.SignalR.Hubs
             if (playerToRemove != null)
             {
                 lobby.Players.Remove(playerToRemove);
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
             }
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
+            UpdateCurrentLobby(lobby.LobbyId);
 
             return;
         }
@@ -141,6 +146,50 @@ namespace DrawAndGuess.SignalR.Hubs
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
             return Task.FromResult(lobby);
+        }
+
+        public Task UpdateCurrentLobby(int lobbyId)
+        {
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            Clients.Clients(lobby.Players.Select(p => p.Id).ToList()).SendAsync("lobbyUpdated", lobby);
+            return null;
+        }
+
+        public async Task SendMessage(int lobbyId, string message, string username)
+        {
+            var connectionId = Context.ConnectionId;
+
+            Message messageObj = new Message(1, username, message, DateTime.UtcNow);
+
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            if (lobby == null)
+            {
+                Console.WriteLine($"Lobby with ID {lobbyId} not found.");
+                return;
+            }
+
+            lobby.Messages.Add(messageObj);
+
+            var clientIds = lobby.Players.Select(p => p.Id).ToList();
+            if (clientIds.Count == 0)
+            {
+                Console.WriteLine("No clients in the lobby to send the message to.");
+                return;
+            }
+
+            Console.WriteLine($"Sending message to clients: {string.Join(", ", clientIds)}");
+
+            // Send the message to everyone in the group except the caller
+            await Clients.OthersInGroup(lobbyId.ToString()).SendAsync("messageReceived", messageObj);
+        }
+
+        public Task<List<Message>> GetMessages(int lobbyId)
+        {
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            return Task.FromResult(lobby.Messages);
         }
     }
 }

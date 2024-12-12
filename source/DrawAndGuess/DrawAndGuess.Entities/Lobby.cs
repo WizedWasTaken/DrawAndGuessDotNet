@@ -14,6 +14,7 @@ namespace DrawAndGuess.Entities
         private string title;
         private LobbyStatus lobbyStatus;
         private List<Player> players;
+        private List<Message> messages;
 
         #endregion Fields
 
@@ -28,6 +29,16 @@ namespace DrawAndGuess.Entities
             Title = title;
             Players = players;
             LobbyStatus = lobbyStatus;
+            Messages = new();
+        }
+
+        public Lobby(int lobbyId, string title, LobbyStatus lobbyStatus, List<Player> players, List<Message> messages)
+        {
+            LobbyId = lobbyId;
+            Title = title;
+            LobbyStatus = lobbyStatus;
+            Players = players;
+            Messages = messages;
         }
 
         #endregion Constructors
@@ -59,6 +70,12 @@ namespace DrawAndGuess.Entities
         {
             get { return lobbyStatus; }
             set { lobbyStatus = value; }
+        }
+
+        public List<Message> Messages
+        {
+            get { return messages; }
+            set { messages = value; }
         }
 
         #endregion Properties

@@ -10,8 +10,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lobby } from "@/entities/lobby";
 import { useSignalR } from "@/lib/hooks/UseSignalR";
 import { useSession } from "next-auth/react";
-import { Router } from "lucide-react";
 import { toast } from "@/lib/hooks/use-toast";
+import { Player } from "@/entities/player";
 
 interface ChatMessage {
   id: string;
@@ -22,7 +22,6 @@ interface ChatMessage {
 
 export default function LobbyPage() {
   const { lobbyId } = useParams<{ lobbyId: string }>();
-  const [players, setPlayers] = useState<string[]>([]);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [lobby, setLobby] = useState<Lobby | undefined>();
@@ -37,21 +36,19 @@ export default function LobbyPage() {
   }
 
   useEffect(() => {
-    setChatMessages([
-      {
-        id: "1",
-        sender: "System",
-        content: "Velkommen til lobbyen!",
-        timestamp: new Date(),
-      },
-      {
-        id: "2",
-        sender: "System",
-        content: "Gør dig klar til at tegne eller gætte!",
-        timestamp: new Date(),
-      },
-    ]);
-  }, []);
+    if (connection) {
+      connection.on("lobbyUpdated", (lobby: Lobby) => {
+        setLobby(lobby);
+      });
+
+      connection.on("messageReceived", receiveMessage);
+
+      return () => {
+        connection.off("lobbyUpdated");
+        connection.off("messageReceived");
+      };
+    }
+  }, [connection]);
 
   useEffect(() => {
     const fetchLobbyData = async () => {
@@ -106,23 +103,52 @@ export default function LobbyPage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const messages = await connection?.invoke<ChatMessage[]>(
+        "GetMessages",
+        parseInt(lobbyId)
+      );
+      setChatMessages(messages || []);
+    };
+
+    fetchMessages();
+  }, [connection]);
+
   const handleStartGame = () => {
     // Implement game start logic here
     console.log("Starting the game...");
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newMessage.trim()) {
-      const newChatMessage: ChatMessage = {
-        id: Date.now().toString(),
-        sender: "Dig",
-        content: newMessage,
-        timestamp: new Date(),
-      };
-      setChatMessages([...chatMessages, newChatMessage]);
-      setNewMessage("");
+
+    if (!newMessage) {
+      return;
     }
+
+    const messageObj = {
+      id: Date.now().toString(),
+      sender: session.data?.user?.name || "Unknown",
+      content: newMessage,
+      timestamp: new Date(),
+    };
+
+    setChatMessages([...chatMessages, messageObj]);
+
+    await connection?.invoke(
+      "SendMessage",
+      parseInt(lobbyId),
+      newMessage,
+      session.data?.user?.name
+    );
+
+    setNewMessage("");
+  };
+
+  const receiveMessage = (message: ChatMessage) => {
+    console.log("Received message:", message);
+    setChatMessages((prevMessages) => [...prevMessages, message]);
   };
 
   return (
@@ -158,12 +184,21 @@ export default function LobbyPage() {
               </CardHeader>
               <CardContent className="flex flex-col flex-grow">
                 <ScrollArea className="flex-grow mb-4">
-                  {chatMessages.map((message) => (
-                    <div key={message.id} className="mb-2">
-                      <span className="font-bold">{message.sender}: </span>
+                  {chatMessages.map((message, index) => (
+                    <div key={index} className="mb-2">
+                      <span className="font-bold">
+                        {typeof message.sender === "string"
+                          ? message.sender === session.data?.user?.name
+                            ? "Dig"
+                            : message.sender
+                          : message.sender === session.data?.user?.name
+                          ? "Dig"
+                          : message.sender}
+                        :{" "}
+                      </span>
                       <span>{message.content}</span>
                       <span className="text-xs text-muted-foreground ml-2">
-                        {message.timestamp.toLocaleTimeString()}
+                        {new Date(message.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
                   ))}
