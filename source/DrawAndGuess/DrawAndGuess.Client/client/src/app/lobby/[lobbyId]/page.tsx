@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lobby } from "@/entities/lobby";
 import { useSignalR } from "@/lib/hooks/UseSignalR";
@@ -25,6 +31,8 @@ export default function LobbyPage() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [lobby, setLobby] = useState<Lobby | undefined>();
+  const [canGameBeStarted, setCanGameBeStarted] = useState(false);
+  const [startGameVotes, setStartGameVotes] = useState<Player[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { connection } = useSignalR();
   const session = useSession();
@@ -41,6 +49,31 @@ export default function LobbyPage() {
         setLobby(lobby);
       });
 
+      connection.on("lobbyUpdatedVotes", (votes: Player[]) => {
+        console.log("Votes updated:", votes);
+        setStartGameVotes(votes);
+      });
+
+      connection.on("messageReceived", receiveMessage);
+
+      return () => {
+        connection.off("lobbyUpdated");
+        connection.off("messageReceived");
+      };
+    }
+  }, [connection]);
+
+  useEffect(() => {
+    if (connection) {
+      connection.on("lobbyUpdated", (lobby: Lobby) => {
+        setLobby(lobby);
+      });
+
+      connection.on("lobbyUpdatedVotes", (votes: Player[]) => {
+        console.log("Votes updated:", votes);
+        setStartGameVotes(votes);
+      });
+
       connection.on("messageReceived", receiveMessage);
 
       return () => {
@@ -52,12 +85,16 @@ export default function LobbyPage() {
 
   useEffect(() => {
     const fetchLobbyData = async () => {
+      console.log("Fetching lobby data...");
+      console.log("Connection: ", connection);
+
       const lobbyData = await connection?.invoke<Lobby>(
         "GetCurrentLobby",
-        parseInt(lobbyId)
+        parseInt(lobbyId),
+        session?.data?.user
       );
 
-      console.log("lobbyData", lobbyData?.players);
+      console.log("lobbyData", lobbyData);
 
       if (!lobbyData) {
         router.push("/lobbies");
@@ -65,16 +102,19 @@ export default function LobbyPage() {
           title: "Lobby",
           description: "Du er ikke en del af denne lobby.",
         });
+      } else {
+        setLobby(lobbyData);
       }
-
-      setLobby(lobbyData);
     };
 
     fetchLobbyData();
   }, [connection]);
-
+  
   useEffect(() => {
     const handleBeforeUnload = async () => {
+      if (!connection || !session.data?.user || !lobby) {
+        return;
+      }
       toast({
         title: "Lobby",
         description: "Forlader lobbyen.",
@@ -116,9 +156,62 @@ export default function LobbyPage() {
   }, [connection]);
 
   const handleStartGame = () => {
-    // Implement game start logic here
-    console.log("Starting the game...");
+    if (!lobby) {
+      return;
+    }
+
+    voteGameStart();
   };
+
+  const voteGameStart = async () => {
+    if (!lobby) {
+      return;
+    }
+
+    const player = session.data?.user;
+
+    if (!player) {
+      return;
+    }
+
+    const playerAlreadyVoted = startGameVotes.some(
+      (votedPlayer) => votedPlayer.userName === player.userName
+    );
+
+    if (playerAlreadyVoted) {
+      setStartGameVotes(
+        startGameVotes.filter(
+          (votedPlayer) => votedPlayer.userName !== player.userName
+        )
+      );
+      await connection?.invoke("VoteStartGame", parseInt(lobbyId), player);
+      return;
+    }
+
+    setStartGameVotes([...startGameVotes, player]);
+
+    await connection?.invoke("VoteStartGame", parseInt(lobbyId), player);
+  };
+
+  const getCanGameBeStarted = () => {
+    if (!lobby) {
+      return false;
+    }
+
+    if (lobby.players.length < 2) {
+      return false;
+    }
+
+    if (lobby.players.length / 2 !== startGameVotes.length) {
+      return false;
+    }
+
+    return lobby.players.length >= 2;
+  };
+
+  useEffect(() => {
+    setCanGameBeStarted(getCanGameBeStarted());
+  }, [lobby, lobby?.players]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,11 +321,17 @@ export default function LobbyPage() {
             </Card>
           </div>
         </CardContent>
+        <CardFooter>
+          <Button
+            onClick={handleStartGame}
+            disabled={!canGameBeStarted}
+            className="w-full"
+          >
+            Start Spil ({startGameVotes.length}/
+            {lobby?.players ? Math.round(lobby.players.length / 2 + 1) : 0})
+          </Button>
+        </CardFooter>
       </Card>
-      {/* TODO: Make a check if lobby owner. */}
-      <Button onClick={handleStartGame} className="w-full">
-        Start Game
-      </Button>
     </div>
   );
 }
