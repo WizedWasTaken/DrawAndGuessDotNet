@@ -7,7 +7,7 @@ import { Statistic } from "./statistic";
 
 export class Player {
   playerId: number = -1;
-  username: string;
+  userName: string;
   name: string = "";
   password: string = "";
   email: string = "";

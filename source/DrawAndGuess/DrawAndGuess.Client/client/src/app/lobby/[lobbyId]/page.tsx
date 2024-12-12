@@ -60,6 +60,8 @@ export default function LobbyPage() {
         parseInt(lobbyId)
       );
 
+      console.log("lobbyData", lobbyData?.players);
+
       if (!lobbyData) {
         router.push("/lobbies");
         toast({
@@ -143,7 +145,7 @@ export default function LobbyPage() {
                   <ul>
                     {lobby?.players.map((player, index) => (
                       <li key={index} className="mb-2">
-                        {player.username}
+                        {player.userName}
                       </li>
                     ))}
                   </ul>
