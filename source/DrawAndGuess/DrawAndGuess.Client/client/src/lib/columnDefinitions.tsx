@@ -88,6 +88,7 @@ export function LobbyTableColumn(
       ),
       cell: ({ row }: { row: any }) => {
         const players: Player[] = row.getValue("players");
+
         return (
           <div className="text-right">
             {players.length > 0

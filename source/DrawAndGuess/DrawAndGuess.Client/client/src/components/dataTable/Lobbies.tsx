@@ -33,6 +33,25 @@ export function LobbiesTable() {
 
   useSignalRListener("lobbyUpdated", (lobby: Lobby) => {
     console.log("Lobby updated:", lobby);
+
+    if (lobby.players.length === 0) {
+      setLobbies((prevLobbies) =>
+        prevLobbies.filter((l) => l.lobbyId !== lobby.lobbyId)
+      );
+      return;
+    }
+
+    if (lobby.lobbyStatus === LobbyStatus.Ended) {
+      setLobbies((prevLobbies) =>
+        prevLobbies.map((l) =>
+          l.lobbyId === lobby.lobbyId
+            ? { ...l, lobbyStatus: LobbyStatus.Ended }
+            : l
+        )
+      );
+      return;
+    }
+
     setLobbies((prevLobbies) =>
       prevLobbies.map((l) => (l.lobbyId === lobby.lobbyId ? lobby : l))
     );
@@ -66,9 +85,14 @@ export function LobbiesTable() {
 
   // Function to create a new lobby
   const createLobby = async (lobby: Lobby) => {
-    const tempLobby: Lobby = await invoke<Lobby>("CreateLobby", lobby.title);
+    const tempLobby: Lobby = await invoke<Lobby>(
+      "CreateLobby",
+      lobby.title,
+      session.data?.user
+    );
 
     if (tempLobby) {
+      router.push("lobby/" + tempLobby.lobbyId);
       return tempLobby;
     }
 
@@ -79,45 +103,54 @@ export function LobbiesTable() {
     try {
       toast({
         title: "Lobby",
-        description: "Finder lobbyen."
-      })
-      const lobbyToJoin: Lobby = await invoke<Lobby>("JoinLobby", lobby.lobbyId, session.data?.user);
+        description: "Finder lobbyen.",
+      });
+      const lobbyToJoin: Lobby = await invoke<Lobby>(
+        "JoinLobby",
+        lobby.lobbyId,
+        session.data?.user
+      );
 
       if (!lobbyToJoin) {
         throw new Error("Kunne ikke finde lobbyen");
       }
 
       if (lobby.lobbyStatus === LobbyStatus.InGame) {
-        throw new Error("Du kan ikke tilslutte en lobby som er i et spil!")
+        throw new Error("Du kan ikke tilslutte en lobby som er i et spil!");
       }
 
       if (lobby.lobbyStatus === LobbyStatus.Ended) {
-        throw new Error("Spillet er slut.")
+        throw new Error("Spillet er slut.");
       }
 
       toast({
         title: "Lobby",
-        description: "Fandt lobbyen."
-      })
+        description: "Fandt lobbyen.",
+      });
 
       toast({
         title: "Lobby",
-        description: "Sender dig til lobbyen."
-      })
+        description: "Sender dig til lobbyen.",
+      });
 
-      router.push("lobby/" + lobbyToJoin.lobbyId)
+      router.push("lobby/" + lobbyToJoin.lobbyId);
     } catch (error: any) {
       toast({
         title: "Lobby",
-        description: error.message
-      })
+        description: error.message,
+      });
     }
   };
 
   return (
     <>
       <LobbiesTableTop lobbies={lobbies} createNewLobby={createLobby} />
-      <DataTable data={lobbies} columns={LobbyTableColumn(JoinLobby)} />
+      {lobbies.length > 0 ? (
+        <DataTable data={lobbies} columns={LobbyTableColumn(JoinLobby)} />
+      ) : (
+        // TODO: Improve this.
+        <p className="w-full text-center">Ingen lobbyer</p>
+      )}
     </>
   );
 }

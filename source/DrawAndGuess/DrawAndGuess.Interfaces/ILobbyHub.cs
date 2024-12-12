@@ -8,7 +8,7 @@ namespace DrawAndGuess.Interfaces
 
         Task<List<Lobby>> GetCurrentLobbies();
 
-        Task<Lobby> CreateLobby(string title);
+        Task<Lobby> CreateLobby(string title, Player player);
 
         // Current Lobby
 

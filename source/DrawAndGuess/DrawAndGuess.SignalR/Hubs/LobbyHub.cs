@@ -10,14 +10,6 @@ namespace DrawAndGuess.SignalR.Hubs
         private static readonly ConcurrentDictionary<string, Player> ConnectedClients = new();
         private static List<Lobby> ActiveLobbies = new();
 
-        // Add a static list of lobbies
-        private readonly Lobby lobby1 = new Lobby(1, "Cheferne", new List<Player> { }, LobbyStatus.Waiting);
-
-        private readonly Lobby lobby2 = new Lobby(2, "Chefens Kontor", new List<Player> { }, LobbyStatus.InGame);
-        private readonly Lobby lobby3 = new Lobby(3, "Kontoret", new List<Player> { }, LobbyStatus.InGame);
-        private readonly Lobby lobby4 = new Lobby(4, "Kontoret", new List<Player> { }, LobbyStatus.InGame);
-        private readonly Lobby lobby5 = new Lobby(5, "Kontoret", new List<Player> { }, LobbyStatus.Ended);
-
         public LobbyHub()
         {
         }
@@ -67,32 +59,18 @@ namespace DrawAndGuess.SignalR.Hubs
 
         public Task<List<Lobby>> GetCurrentLobbies()
         {
-            if (ActiveLobbies.Count == 0)
-            {
-                ActiveLobbies.Add(lobby1);
-                ActiveLobbies.Add(lobby2);
-                ActiveLobbies.Add(lobby3);
-                ActiveLobbies.Add(lobby4);
-                ActiveLobbies.Add(lobby5);
-            }
-
             var lobbies = ActiveLobbies;
 
             return Task.FromResult(lobbies);
         }
 
-        public async Task<Lobby> CreateLobby(string title)
+        public async Task<Lobby> CreateLobby(string title, Player player)
         {
-            var connectionId = Context.ConnectionId;
-
-            var player = ConnectedClients[connectionId];
-
-            var lobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { player }, LobbyStatus.Waiting);
-
-            lobby.Messages.Add(new Message(1, "System", "Oprettede lobby.", DateTime.UtcNow));
-            lobby.Messages.Add(new Message(1, "System", "Gør dig klar til at tegne eller gætte!", DateTime.UtcNow));
+            var lobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { }, LobbyStatus.Waiting);
 
             ActiveLobbies.Add(lobby);
+            await JoinLobby(lobby.LobbyId, player);
+            await SendMessage(lobby.LobbyId, $"{player.UserName} oprettede {lobby.Title}.", "System");
 
             await Clients.All.SendAsync("lobbyCreated", lobby);
 
@@ -114,7 +92,8 @@ namespace DrawAndGuess.SignalR.Hubs
             lobby.Players.Add(player);
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
-            UpdateCurrentLobby(lobby.LobbyId);
+            await SendMessage(lobby.LobbyId, $"{player.UserName} tilsluttede sig lobbyen.", "System");
+            await UpdateCurrentLobby(lobby.LobbyId);
 
             return lobby;
         }
@@ -136,9 +115,14 @@ namespace DrawAndGuess.SignalR.Hubs
             }
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
-            UpdateCurrentLobby(lobby.LobbyId);
 
-            return;
+            if (lobby.Players.Count == 0)
+            {
+                ActiveLobbies.Remove(lobby);
+                return;
+            }
+
+            SendMessage(lobby.LobbyId, $"{player.UserName} forlod lobbyen.", "System");
         }
 
         public Task<Lobby> GetCurrentLobby(int lobbyId)
@@ -153,14 +137,12 @@ namespace DrawAndGuess.SignalR.Hubs
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
             Clients.Clients(lobby.Players.Select(p => p.Id).ToList()).SendAsync("lobbyUpdated", lobby);
-            return null;
+            return Task.CompletedTask;
         }
 
         public async Task SendMessage(int lobbyId, string message, string username)
         {
-            var connectionId = Context.ConnectionId;
-
-            Message messageObj = new Message(1, username, message, DateTime.UtcNow);
+            Message messageObj = new(1, username, message, DateTime.UtcNow);
 
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
