@@ -8,6 +8,7 @@ namespace DrawAndGuess.SignalR.Hubs
     public class LobbyHub : Microsoft.AspNetCore.SignalR.Hub, ILobbyHub
     {
         private static readonly ConcurrentDictionary<string, Player> ConnectedClients = new();
+        private static readonly ConcurrentDictionary<Lobby, List<Player>> VoteStartLobbies = new();
         private static List<Lobby> ActiveLobbies = new();
 
         public LobbyHub()
@@ -68,6 +69,7 @@ namespace DrawAndGuess.SignalR.Hubs
         {
             var lobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { }, LobbyStatus.Waiting);
 
+            VoteStartLobbies.TryAdd(lobby, new List<Player>());
             ActiveLobbies.Add(lobby);
             await SendMessage(lobby.LobbyId, $"{player.UserName} oprettede {lobby.Title}.", "System");
             await JoinLobby(lobby.LobbyId, player);
@@ -112,6 +114,17 @@ namespace DrawAndGuess.SignalR.Hubs
             {
                 lobby.Players.Remove(playerToRemove);
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
+
+                var voteStartLobby = VoteStartLobbies.FirstOrDefault(l => l.Key.LobbyId == lobbyId);
+                if (voteStartLobby.Key != null)
+                {
+                    voteStartLobby.Value.Remove(player);
+                }
+
+                if (voteStartLobby.Value.Count == 0)
+                {
+                    VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
+                }
             }
 
             await Clients.All.SendAsync("lobbyUpdated", lobby);
@@ -140,6 +153,38 @@ namespace DrawAndGuess.SignalR.Hubs
             return Task.CompletedTask;
         }
 
+        public async Task VoteStartGame(int lobbyId, Player player)
+        {
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+
+            if (lobby == null)
+            {
+                return;
+            }
+
+            var voteStartLobby = VoteStartLobbies.GetOrAdd(lobby, new List<Player>());
+
+            if (voteStartLobby.Any(p => p.Id == player.Id))
+            {
+                voteStartLobby.Remove(player);
+                await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdatedVotes", voteStartLobby);
+                await SendMessage(lobby.LobbyId, $"{player.UserName} fjernede sin stemme for at starte spillet.", "System");
+                return;
+            }
+
+            voteStartLobby.Add(player);
+            await SendMessage(lobby.LobbyId, $"{player.UserName} stemte for at starte spillet.", "System");
+            await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdatedVotes", voteStartLobby);
+
+            if (voteStartLobby.Count >= lobby.Players.Count / 2)
+            {
+                lobby.LobbyStatus = LobbyStatus.InGame;
+                await SendMessage(lobby.LobbyId, $"{player.UserName} startede spillet.", "System");
+                await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdated", lobby);
+                // Make start game logic.
+            }
+        }
+
         public async Task SendMessage(int lobbyId, string message, string username)
         {
             Message messageObj = new(1, username, message, DateTime.UtcNow);
@@ -164,6 +209,12 @@ namespace DrawAndGuess.SignalR.Hubs
             Console.WriteLine($"Sending message to clients: {string.Join(", ", clientIds)}");
 
             // Send the message to everyone in the group except the caller
+            if (username == "System")
+            {
+                await Clients.Group(lobbyId.ToString()).SendAsync("messageReceived", messageObj);
+                return;
+            }
+
             await Clients.OthersInGroup(lobbyId.ToString()).SendAsync("messageReceived", messageObj);
         }
 

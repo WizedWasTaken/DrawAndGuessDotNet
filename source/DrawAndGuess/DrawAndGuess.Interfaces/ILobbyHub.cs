@@ -20,6 +20,8 @@ namespace DrawAndGuess.Interfaces
 
         Task UpdateCurrentLobby(int lobbyId);
 
+        Task VoteStartGame(int lobbyId, Player player);
+
         // Messages
 
         Task SendMessage(int lobbyId, string message, string username);
