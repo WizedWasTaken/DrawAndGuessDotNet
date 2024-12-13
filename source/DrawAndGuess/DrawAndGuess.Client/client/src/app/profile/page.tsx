@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { callApiAsync } from "@/lib/callApi";
 
-export default function TestPage() {
+export default function ProfilePage() {
   const { data: session } = useSession();
   const [users, setUsers] = useState<any[]>([]);
 
@@ -43,8 +43,11 @@ export default function TestPage() {
       <br />
       <h1>List of all users</h1>
       <ul>
-        {users && users.map((user) => <li key={user.id}>{user.userName}</li>)}
-        {!users && <li>No users found</li>}
+        {users && users.length > 0 ? (
+          users.map((user) => <li key={user.id}>{user.userName}</li>)
+        ) : (
+          <li>No users found</li>
+        )}
       </ul>
     </div>
   );

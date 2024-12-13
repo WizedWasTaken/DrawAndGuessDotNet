@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import Link from 'next/link'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Brush, Users, Trophy, Zap, Sparkles } from 'lucide-react'
-import { AnimatePresence, motion } from 'framer-motion'
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Brush, Users, Trophy, Zap, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
   return (
@@ -31,7 +31,11 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex justify-center mb-16"
           >
-            <Button asChild size="lg" className="text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+            <Button
+              asChild
+              size="lg"
+              className="text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               <Link href="/lobbies">
                 Start Drawing <Zap className="ml-2" />
               </Link>
@@ -67,12 +71,22 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="mt-16 text-center"
           >
-            <h2 className="text-3xl font-bold mb-4">Why Choose Draw & Guess?</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              Why Choose Draw & Guess?
+            </h2>
             <div className="flex flex-wrap justify-center gap-4">
-              <Badge variant="secondary" className="text-lg py-2 px-4">Innovative Gameplay</Badge>
-              <Badge variant="secondary" className="text-lg py-2 px-4">Cross-platform</Badge>
-              <Badge variant="secondary" className="text-lg py-2 px-4">Regular Updates</Badge>
-              <Badge variant="secondary" className="text-lg py-2 px-4">Community-driven</Badge>
+              <Badge variant="secondary" className="text-lg py-2 px-4">
+                Innovative Gameplay
+              </Badge>
+              <Badge variant="secondary" className="text-lg py-2 px-4">
+                Cross-platform
+              </Badge>
+              <Badge variant="secondary" className="text-lg py-2 px-4">
+                Regular Updates
+              </Badge>
+              <Badge variant="secondary" className="text-lg py-2 px-4">
+                Community-driven
+              </Badge>
             </div>
           </motion.div>
 
@@ -93,7 +107,7 @@ export default function Home() {
         </AnimatePresence>
       </main>
     </div>
-  )
+  );
 }
 
 interface FeatureCardProps {
@@ -102,7 +116,7 @@ interface FeatureCardProps {
   description: string;
 }
 
-function FeatureCard({ icon, title, description }: FeatureCardProps) {
+export function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/20">
       <CardContent className="p-6">
@@ -111,6 +125,5 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
         <p className="text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
-  )
+  );
 }
-
