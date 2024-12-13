@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import Home, { FeatureCard } from "@/app/page";
+import Home from "@/app/page";
+import FeatureCard from "@/components/FeatureCard";
 import "@testing-library/jest-dom";
 import { Brush } from "lucide-react";
 
