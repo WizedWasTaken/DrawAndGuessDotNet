@@ -109,7 +109,7 @@ export default function LobbyPage() {
 
     fetchLobbyData();
   }, [connection]);
-  
+
   useEffect(() => {
     const handleBeforeUnload = async () => {
       if (!connection || !session.data?.user || !lobby) {
@@ -312,6 +312,8 @@ export default function LobbyPage() {
                     type="text"
                     placeholder="Skriv en besked..."
                     value={newMessage}
+                    // TODO: Fix this later, so a max char count isn't needed.
+                    maxLength={60}
                     onChange={(e) => setNewMessage(e.target.value)}
                     className="mr-2"
                   />
