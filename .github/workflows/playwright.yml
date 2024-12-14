@@ -48,15 +48,20 @@ jobs:
     - name: Upload HTML report to Azure
       shell: bash
       run: |
-        REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
-        REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
-        azcopy cp --recursive --from-to=LocalBlob "$REPORT_PATH" "https://drawandguess.z1.web.core.windows.net/$web/$REPORT_DIR"
-        echo "::notice title=HTML report URL::https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/index.html"
-      env:
-        AZCOPY_AUTO_LOGIN_TYPE: SPN
-        AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
-        AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
-        AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
+            REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
+            REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
+            echo "Checking if the report directory exists: $REPORT_PATH"
+            if [ -d "$REPORT_PATH" ]; then
+              azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net/\$web/$REPORT_DIR"
+              echo "::notice title=HTML report url::https://drawandguess.z1.web.core.windows.net/\$web/$REPORT_DIR/index.html"
+            else
+              echo "::error::Playwright report directory does not exist: $REPORT_PATH"
+            fi
+        env:
+            AZCOPY_AUTO_LOGIN_TYPE: SPN
+            AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
+            AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
+            AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
 
     - name: Comment with PR status and HTML report URL
       if: github.event_name == 'pull_request'
