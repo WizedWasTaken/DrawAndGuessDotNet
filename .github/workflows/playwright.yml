@@ -8,6 +8,9 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
     - uses: actions/checkout@v4
 
@@ -37,7 +40,7 @@ jobs:
       shell: bash
       run: |
           REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
-          REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report/*"
+          REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
           echo "Checking if the report directory exists: $REPORT_PATH"
           if [ -d "$REPORT_PATH" ]; then
             azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net/\$web/$REPORT_DIR"
