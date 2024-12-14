@@ -330,7 +330,7 @@ export default function LobbyPage() {
             className="w-full"
           >
             Start Spil ({startGameVotes.length}/
-            {lobby?.players ? Math.round(lobby.players.length / 2 + 1) : 0})
+            {lobby?.players ? Math.round(lobby.players.length / 2) : 0})
           </Button>
         </CardFooter>
       </Card>
