@@ -4,6 +4,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
@@ -18,10 +19,17 @@ jobs:
       with:
         node-version: lts/*
 
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v3
+      with:
+        path: source/DrawAndGuess/DrawAndGuess.Client/client/node_modules
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-
+
     - name: Install dependencies and Playwright Browsers
       working-directory: source/DrawAndGuess/DrawAndGuess.Client/client
       run: |
-        npm install
         npm ci
         npx playwright install --with-deps
 
@@ -29,8 +37,9 @@ jobs:
       working-directory: source/DrawAndGuess/DrawAndGuess.Client/client
       run: npx playwright test
 
-    - uses: actions/upload-artifact@v4
+    - name: Upload Playwright report as artifact
       if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v4
       with:
         name: playwright-report
         path: source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report/
@@ -39,39 +48,32 @@ jobs:
     - name: Upload HTML report to Azure
       shell: bash
       run: |
-        REPORT_DIR='run-${{ github.run_id }}-${{ github.run_attempt }}'
+        REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
         REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
         azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.web.core.windows.net/\$web/$REPORT_DIR"
-        echo "::notice title=HTML report url::https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/index.html"
+        echo "::notice title=HTML report URL::https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/index.html"
       env:
         AZCOPY_AUTO_LOGIN_TYPE: SPN
         AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
         AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
         AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
 
-    - name: Comment thanks for PR
+    - name: Comment with PR status and HTML report URL
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.rest.issues.createComment({
-          issue_number: context.issue.number,
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          body: 'Thank you for the Pull Request! The Playwright tests are running. Please wait for the results.'
-          })
-
-    - name: Comment with HTML report URL
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const reportUrl = `https://drawandguess.blob.core.windows.net/run-${context.runId}-${context.runAttempt}/playwright-report/index.html`;
-          github.rest.issues.createComment({
-          issue_number: context.issue.number,
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          body: `The Playwright test report is available at: ${reportUrl}`
-          })
+          const reportUrl = `https://drawandguess.z1.web.core.windows.net/run-${context.runId}-${context.runAttempt}/index.html`;
+          const comments = [
+            'Thank you for the Pull Request! The Playwright tests are running. Please wait for the results.',
+            `The Playwright test report is available at: ${reportUrl}`
+          ];
+          for (const body of comments) {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
+          }
