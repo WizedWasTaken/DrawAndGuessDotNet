@@ -23,6 +23,13 @@
 *.userosscache
 *.sln.docstates
 
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
