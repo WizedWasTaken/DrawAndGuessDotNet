@@ -39,20 +39,20 @@ jobs:
     - name: Upload HTML report to Azure
       shell: bash
       run: |
-          REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
-          REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
-          echo "Checking if the report directory exists: $REPORT_PATH"
-          if [ -d "$REPORT_PATH" ]; then
-            azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net/\$web/$REPORT_DIR"
-            echo "::notice title=HTML report url::https://drawandguess.z1.web.core.windows.net/\$web/$REPORT_DIR/index.html"
-          else
-            echo "::error::Playwright report directory does not exist: $REPORT_PATH"
-          fi
+        REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}/playwright-report"
+        REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
+        echo "Checking if the report directory exists: $REPORT_PATH"
+        if [ -d "$REPORT_PATH" ]; then
+        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net/$REPORT_DIR"
+        echo "::notice title=HTML report url::https://drawandguess.blob.core.windows.net/$REPORT_DIR/index.html"
+        else
+        echo "::error::Playwright report directory does not exist: $REPORT_PATH"
+        fi
       env:
-          AZCOPY_AUTO_LOGIN_TYPE: SPN
-          AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
-          AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
-          AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
+        AZCOPY_AUTO_LOGIN_TYPE: SPN
+        AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
+        AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
+        AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
 
     - name: Comment thanks for PR
       if: github.event_name == 'pull_request'
@@ -61,10 +61,10 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: 'Thank you for the Pull Request! The Playwright tests are running. Please wait for the results.'
+          issue_number: context.issue.number,
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          body: 'Thank you for the Pull Request! The Playwright tests are running. Please wait for the results.'
           })
 
     - name: Comment with HTML report URL
@@ -73,7 +73,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const reportUrl = `https://drawandguess.z1.web.core.windows.net/\$web/run-${context.runId}-${context.runAttempt}/index.html`;
+          const reportUrl = `https://drawandguess.blob.core.windows.net/run-${context.runId}-${context.runAttempt}/playwright-report/index.html`;
           github.rest.issues.createComment({
           issue_number: context.issue.number,
           owner: context.repo.owner,
