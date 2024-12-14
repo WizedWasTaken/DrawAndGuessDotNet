@@ -57,7 +57,7 @@ jobs:
             else
               echo "::error::Playwright report directory does not exist: $REPORT_PATH"
             fi
-        env:
+      env:
             AZCOPY_AUTO_LOGIN_TYPE: SPN
             AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
             AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
