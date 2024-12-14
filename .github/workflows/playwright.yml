@@ -43,8 +43,8 @@ jobs:
         REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
         echo "Checking if the report directory exists: $REPORT_PATH"
         if [ -d "$REPORT_PATH" ]; then
-        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net/$REPORT_DIR"
-        echo "::notice title=HTML report url::https://drawandguess.blob.core.windows.net/$REPORT_DIR/index.html"
+        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.z1.blob.core.windows.net/$REPORT_DIR"
+        echo "::notice title=HTML report url::https://drawandguess.z1.blob.core.windows.net/$REPORT_DIR/index.html"
         else
         echo "::error::Playwright report directory does not exist: $REPORT_PATH"
         fi
