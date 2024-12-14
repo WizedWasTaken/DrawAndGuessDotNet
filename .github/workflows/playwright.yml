@@ -50,14 +50,30 @@ jobs:
           AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
           AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
           AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
-      
-    - name: Comment on the Pull Request with HTML report URL
+
+    - name: Comment thanks for PR
       if: github.event_name == 'pull_request'
-      run: |
-            PR_NUMBER=${{ github.event.pull_request.number }}
-            REPORT_URL="https://drawandguess.z1.web.core.windows.net/\$web/run-${{ github.run_id }}-${{ github.run_attempt }}/index.html"
-            COMMENT_BODY="The Playwright test report is available at: $REPORT_URL"
-            curl -X POST \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d '{"body": "'"${COMMENT_BODY}"'"}' \
-              "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: 'Thank you for the Pull Request! The Playwright tests are running. Please wait for the results.'
+          })
+
+    - name: Comment with HTML report URL
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const reportUrl = `https://drawandguess.z1.web.core.windows.net/\$web/run-${context.runId}-${context.runAttempt}/index.html`;
+          github.rest.issues.createComment({
+          issue_number: context.issue.number,
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          body: `The Playwright test report is available at: ${reportUrl}`
+          })
