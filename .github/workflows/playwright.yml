@@ -39,15 +39,10 @@ jobs:
     - name: Upload HTML report to Azure
       shell: bash
       run: |
-        REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}/playwright-report"
+        REPORT_DIR='run-${{ github.run_id }}-${{ github.run_attempt }}'
         REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
-        echo "Checking if the report directory exists: $REPORT_PATH"
-        if [ -d "$REPORT_PATH" ]; then
-        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.z1.blob.core.windows.net/$REPORT_DIR"
-        echo "::notice title=HTML report url::https://drawandguess.z1.blob.core.windows.net/$REPORT_DIR/index.html"
-        else
-        echo "::error::Playwright report directory does not exist: $REPORT_PATH"
-        fi
+        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.web.core.windows.net/\$web/$REPORT_DIR"
+        echo "::notice title=HTML report url::https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/index.html"
       env:
         AZCOPY_AUTO_LOGIN_TYPE: SPN
         AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
