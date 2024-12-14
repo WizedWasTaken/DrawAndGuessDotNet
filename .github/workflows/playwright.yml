@@ -2,7 +2,7 @@ name: Playwright Tests
 on:
   push:
     branches: [ main, master ]
-  pull_request:
+  pull_request_target:
     branches: [ main, master ]
 jobs:
   test:
@@ -61,4 +61,3 @@ jobs:
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               -d '{"body": "'"${COMMENT_BODY}"'"}' \
               "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
-        
