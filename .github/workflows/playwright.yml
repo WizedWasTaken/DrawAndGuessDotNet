@@ -50,8 +50,8 @@ jobs:
       run: |
         REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
         REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
-        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.z1.web.core.windows.net/\$web/$REPORT_DIR"
-        echo "::notice title=HTML report URL::https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/index.html"
+        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net\$web/$REPORT_DIR"
+        echo "::notice title=HTML report URL::https://drawandguess.blob.core.windows.net/$REPORT_DIR/index.html"
       env:
         AZCOPY_AUTO_LOGIN_TYPE: SPN
         AZCOPY_SPA_APPLICATION_ID: ${{ secrets.AZCOPY_SPA_APPLICATION_ID }}
@@ -64,7 +64,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const reportUrl = `https://drawandguess.z1.web.core.windows.net/run-${context.runId}-${context.runAttempt}/index.html`;
+          const reportUrl = `https://drawandguess.blob.core.windows.net/run-${context.runId}-${context.runAttempt}/index.html`;
           const comments = [
             'Thank you for the Pull Request! The Playwright tests are running. Please wait for the results.',
             `The Playwright test report is available at: ${reportUrl}`
