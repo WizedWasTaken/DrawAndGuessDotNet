@@ -3,10 +3,15 @@
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { callApiAsync } from "@/lib/callApi";
+import { notFound } from "next/navigation";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [users, setUsers] = useState<any[]>([]);
+
+  if (!session || session == undefined) {
+    return notFound();
+  }
 
   // Fetch all users from the API
   const fetchUsers = async () => {
