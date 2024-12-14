@@ -40,8 +40,8 @@ jobs:
           REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report/*"
           echo "Checking if the report directory exists: $REPORT_PATH"
           if [ -d "$REPORT_PATH" ]; then
-            azcopy cp --recursive "$REPORT_PATH" "https://<STORAGE_ACCOUNT_NAME>.blob.core.windows.net/\$web/$REPORT_DIR"
-            echo "::notice title=HTML report url::https://<STORAGE_ACCOUNT_NAME>.z1.web.core.windows.net/\$web/$REPORT_DIR/index.html"
+            azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.blob.core.windows.net/\$web/$REPORT_DIR"
+            echo "::notice title=HTML report url::https://drawandguess.z1.web.core.windows.net/\$web/$REPORT_DIR/index.html"
           else
             echo "::error::Playwright report directory does not exist: $REPORT_PATH"
           fi
@@ -55,7 +55,7 @@ jobs:
       if: github.event_name == 'pull_request'
       run: |
             PR_NUMBER=${{ github.event.pull_request.number }}
-            REPORT_URL="https://<STORAGE_ACCOUNT_NAME>.z1.web.core.windows.net/\$web/run-${{ github.run_id }}-${{ github.run_attempt }}/index.html"
+            REPORT_URL="https://drawandguess.z1.web.core.windows.net/\$web/run-${{ github.run_id }}-${{ github.run_attempt }}/index.html"
             COMMENT_BODY="The Playwright test report is available at: $REPORT_URL"
             curl -X POST \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
