@@ -70,7 +70,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
-          const reportUrl = `https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/playwright-report/index.html`;
+          const reportUrl = `https://drawandguess.z1.web.core.windows.net/${REPORT_DIR}/playwright-report/index.html`;
           const comments = [
             `The Playwright test report is available at: ${reportUrl}`
           ];
