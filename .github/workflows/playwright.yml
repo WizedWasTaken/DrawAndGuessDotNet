@@ -50,7 +50,7 @@ jobs:
       run: |
         REPORT_DIR="run-${{ github.run_id }}-${{ github.run_attempt }}"
         REPORT_PATH="source/DrawAndGuess/DrawAndGuess.Client/client/playwright-report"
-        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.web.core.windows.net/\$web/$REPORT_DIR"
+        azcopy cp --recursive "$REPORT_PATH" "https://drawandguess.z1.web.core.windows.net/\$web/$REPORT_DIR"
         echo "::notice title=HTML report URL::https://drawandguess.z1.web.core.windows.net/$REPORT_DIR/index.html"
       env:
         AZCOPY_AUTO_LOGIN_TYPE: SPN
