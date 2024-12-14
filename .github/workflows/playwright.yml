@@ -51,3 +51,14 @@ jobs:
           AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}
           AZCOPY_TENANT_ID: ${{ secrets.AZCOPY_TENANT_ID }}
       
+    - name: Comment on the Pull Request with HTML report URL
+      if: github.event_name == 'pull_request'
+      run: |
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            REPORT_URL="https://<STORAGE_ACCOUNT_NAME>.z1.web.core.windows.net/\$web/run-${{ github.run_id }}-${{ github.run_attempt }}/index.html"
+            COMMENT_BODY="The Playwright test report is available at: $REPORT_URL"
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -d '{"body": "'"${COMMENT_BODY}"'"}' \
+              "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
+        
