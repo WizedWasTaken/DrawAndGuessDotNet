@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 
 // UI
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Form,
   FormControl,
@@ -116,7 +117,7 @@ export default function SignInForm({
             <FormItem>
               <FormLabel>Adgangskode</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Adgangskode" {...field} />
+                <PasswordInput placeholder="Adgangskode" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

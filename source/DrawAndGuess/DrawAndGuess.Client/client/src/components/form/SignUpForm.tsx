@@ -25,6 +25,7 @@ import { callApi } from "@/lib/callApi";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PasswordInput } from "../ui/password-input";
 
 interface ApiResponse {
   description?: string;
@@ -174,7 +175,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
               <FormItem className="flex-1">
                 <FormLabel>Adgangskode</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Adgangskode" {...field} />
+                  <PasswordInput placeholder="Adgangskode" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,11 +188,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
               <FormItem className="flex-1">
                 <FormLabel>Gentag adgangskode</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Gentag adgangskode"
-                    {...field}
-                  />
+                  <PasswordInput placeholder="Gentag adgangskode" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
