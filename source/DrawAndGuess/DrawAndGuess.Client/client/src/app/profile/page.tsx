@@ -9,10 +9,6 @@ export default function ProfilePage() {
   const { data: session } = useSession();
   const [users, setUsers] = useState<any[]>([]);
 
-  if (!session || session == undefined) {
-    return notFound();
-  }
-
   // Fetch all users from the API
   const fetchUsers = async () => {
     console.log("Fetching users... notUseEffect");

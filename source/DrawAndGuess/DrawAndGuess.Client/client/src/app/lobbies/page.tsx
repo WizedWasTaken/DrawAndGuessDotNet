@@ -16,9 +16,6 @@ export default function Home() {
         <CardContent>
           <LobbiesTable />
         </CardContent>
-        <CardFooter>
-          <h2 className="text-xl w-full font-bold text-center">Lobbies</h2>
-        </CardFooter>
       </Card>
     </div>
   );
