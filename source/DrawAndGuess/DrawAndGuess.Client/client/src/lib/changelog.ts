@@ -64,6 +64,7 @@ export const changelogs: IChangelog[] = [
       "Fixed an issue with the profile page.",
       "Added a button in lobbies to vote start the game.",
       "Improved UX with the lobby function",
+      "Changed color scheme, to match the purpose of the application.",
     ],
   },
 ];
