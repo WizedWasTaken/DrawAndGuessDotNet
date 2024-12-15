@@ -89,21 +89,6 @@ export default function Home() {
               </Badge>
             </div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-            className="mt-16 text-center"
-          >
-            <Sparkles className="w-16 h-16 mx-auto text-primary mb-4" />
-            <p className="text-xl italic">
-              "The most addictive drawing game I've ever played!"
-            </p>
-            <p className="text-lg text-muted-foreground mt-2">
-              - Game Developer Magazine
-            </p>
-          </motion.div>
         </AnimatePresence>
       </main>
     </div>
