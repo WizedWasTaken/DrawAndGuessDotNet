@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,7 +34,7 @@ interface SignUpFormProps {
   className?: string;
 }
 
-export default function SignUpForm({ className = "" }: SignUpFormProps) {
+export default function SignUpForm({}: SignUpFormProps) {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {

@@ -3,7 +3,6 @@
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { callApiAsync } from "@/lib/callApi";
-import { notFound } from "next/navigation";
 
 export default function ProfilePage() {
   const { data: session } = useSession();

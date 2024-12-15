@@ -3,14 +3,13 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useSignalR } from "@/lib/hooks/UseSignalR";
 import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Changelog from "@/components/Changelog";
 import { Button } from "./ui/button";
 
@@ -26,12 +25,12 @@ export default function TechnicalInformation() {
     setUserCount(userCount);
   });
 
-  const fetchUserCount = async () => {
+  const fetchUserCount = useCallback(async () => {
     if (connection?.state === "Connected") {
       console.log("Sending GetConnectedCount");
       await connection.send("GetConnectedCount");
     }
-  };
+  }, [connection]);
 
   useEffect(() => {
     fetchUserCount();
@@ -46,7 +45,7 @@ export default function TechnicalInformation() {
     const width = window.screen.width;
     const height = window.screen.height;
     setScreenResolution(`${width}x${height}`);
-  }, [connection]);
+  }, [connection, fetchUserCount]);
 
   return (
     <div className="fixed bottom-4 left-4">

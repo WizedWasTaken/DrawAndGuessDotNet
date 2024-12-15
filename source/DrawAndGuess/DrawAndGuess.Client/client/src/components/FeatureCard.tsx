@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { CardSpotlight } from "./ui/card-spotlight";
 
 interface FeatureCardProps {

@@ -1,5 +1,4 @@
 import { Player } from "@/entities/player";
-import NextAuth from "next-auth";
 
 declare module "next-auth" {
   /**

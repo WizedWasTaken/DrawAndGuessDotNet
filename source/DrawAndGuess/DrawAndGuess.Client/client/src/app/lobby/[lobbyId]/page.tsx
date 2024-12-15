@@ -2,7 +2,7 @@
 
 import { notFound, useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -38,10 +38,12 @@ export default function LobbyPage() {
   const session = useSession();
   const router = useRouter();
 
-  // If lobby ID doesn't exist.
-  if (!lobbyId) {
-    return notFound();
-  }
+  useEffect(() => {
+    // If lobby ID doesn't exist.
+    if (!lobbyId) {
+      notFound();
+    }
+  }, [lobbyId]);
 
   useEffect(() => {
     if (connection) {
@@ -95,7 +97,7 @@ export default function LobbyPage() {
     };
 
     fetchLobbyData();
-  }, [connection]);
+  }, [connection, lobbyId, router, session]);
 
   useEffect(() => {
     const handleBeforeUnload = async () => {
@@ -121,7 +123,7 @@ export default function LobbyPage() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       handleBeforeUnload();
     };
-  }, [connection]);
+  }, [connection, lobbyId, session.data?.user]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -137,7 +139,7 @@ export default function LobbyPage() {
     };
 
     fetchMessages();
-  }, [connection]);
+  }, [connection, lobbyId]);
 
   const handleStartGame = () => {
     if (!lobby) {
@@ -177,7 +179,7 @@ export default function LobbyPage() {
     await connection?.invoke("VoteStartGame", parseInt(lobbyId), player);
   };
 
-  const getCanGameBeStarted = () => {
+  const getCanGameBeStarted = useCallback(() => {
     if (!lobby) {
       return false;
     }
@@ -191,11 +193,11 @@ export default function LobbyPage() {
     }
 
     return lobby.players.length >= 2;
-  };
+  }, [lobby, startGameVotes.length]);
 
   useEffect(() => {
     setCanGameBeStarted(getCanGameBeStarted());
-  }, [lobby, lobby?.players]);
+  }, [getCanGameBeStarted, lobby]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();

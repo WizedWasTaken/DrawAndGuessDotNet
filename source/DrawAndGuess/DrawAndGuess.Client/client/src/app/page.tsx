@@ -106,7 +106,7 @@ export default function Home() {
           >
             <Sparkles className="w-16 h-16 mx-auto text-primary mb-4" />
             <p className="text-xl italic">
-              "The most addictive drawing game I've ever played!"
+              &quot;The most addictive drawing game I&apos;ve ever played!&quot;
             </p>
             <p className="text-lg text-muted-foreground mt-2">
               - Game Developer Magazine
