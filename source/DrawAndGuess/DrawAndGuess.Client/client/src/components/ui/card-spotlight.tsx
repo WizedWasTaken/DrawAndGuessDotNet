@@ -5,6 +5,8 @@ import React, { MouseEvent as ReactMouseEvent, useState } from "react";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 import { cn } from "@/lib/utils";
 
+// TODO: Improve the CardSpotlight component & White mode for the CanvasRevealEffect
+
 export const CardSpotlight = ({
   children,
   radius = 350,
@@ -35,7 +37,7 @@ export const CardSpotlight = ({
   return (
     <div
       className={cn(
-        "group/spotlight p-10 rounded-md relative border border-neutral-800 bg-black dark:border-neutral-800",
+        "group/spotlight p-10 rounded-md relative border border-neutral-800 bg-white dark:bg-black dark:border-neutral-800",
         className
       )}
       onMouseMove={handleMouseMove}
