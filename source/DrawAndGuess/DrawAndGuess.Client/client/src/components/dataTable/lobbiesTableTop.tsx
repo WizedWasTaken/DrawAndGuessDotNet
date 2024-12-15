@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -14,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Lobby } from "@/entities/lobby";
 
 export default function LobbiesTableTop({
-  lobbies,
   createNewLobby,
 }: {
   lobbies: Lobby[];

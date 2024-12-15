@@ -11,7 +11,6 @@ import { PasswordInput } from "@/components/ui/password-input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,7 +33,6 @@ interface SignInFormProps {
 }
 
 export default function SignInForm({
-  className = "",
   callbackUrl = "/profile",
 }: SignInFormProps) {
   const form = useForm<z.infer<typeof signInSchema>>({

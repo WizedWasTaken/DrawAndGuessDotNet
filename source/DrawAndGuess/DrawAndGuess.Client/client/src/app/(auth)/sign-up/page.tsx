@@ -1,3 +1,4 @@
+// Components
 import SignUpForm from "@/components/form/SignUpForm";
 import {
   Card,
@@ -7,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+// Next
 import Link from "next/link";
 
 export default function SignUpPage() {

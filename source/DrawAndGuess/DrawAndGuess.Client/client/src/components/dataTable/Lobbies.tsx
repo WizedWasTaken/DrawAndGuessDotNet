@@ -6,10 +6,8 @@ import { DataTable } from "@/components/dataTable/data-table";
 import { LobbyTableColumn } from "@/lib/columnDefinitions";
 import { Lobby } from "@/entities/lobby"; // Ensure you have a Member type defined appropriately
 import LobbiesTableTop from "@/components/dataTable/lobbiesTableTop";
-import { Dialog } from "@/components/ui/dialog";
 import { useSignalR } from "@/lib/hooks/UseSignalR";
 import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
-import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/hooks/use-toast";
 import { LobbyStatus } from "@/entities/lobby-status";
@@ -85,7 +83,7 @@ export function LobbiesTable() {
     return () => {
       connection?.off("GetCurrentLobbies");
     };
-  }, [connectionState, invoke]);
+  }, [connection, connectionState, invoke]);
 
   if (!connection) {
     return;
