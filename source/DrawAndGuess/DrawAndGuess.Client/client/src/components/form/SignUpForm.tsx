@@ -25,6 +25,11 @@ import { callApi } from "@/lib/callApi";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PasswordInput } from "../ui/password-input";
+
+interface ApiResponse {
+  description?: string;
+}
 
 interface SignUpFormProps {
   className?: string;
@@ -52,39 +57,42 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
       setIsDisabled(true);
       toast({
         title: "Opret Konto",
-        description: "Opretter din konto..."
+        description: "Opretter din konto...",
       });
 
-      const apiRes = await callApi("/auth/Register",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            name: values.name,
-            username: values.username,
-            email: values.email,
-            password: values.password,
-          }),
-        }
-      )
+      const apiRes = await callApi("/auth/Register", {
+        method: "POST",
+        body: JSON.stringify({
+          name: values.name,
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        }),
+      });
 
       if (!apiRes.isSuccessful) {
-        toast({
-          title: "Opret Konto",
-          description: "Kunne ikke oprette din konto."
-        })
-        throw new Error("Couldn't create account. ")
+        (apiRes.data as ApiResponse[]).forEach((error) => {
+          toast({
+            title: "Opret Konto",
+            description: `${
+              error?.description ?? "Der opstod en uventet fejl"
+            }`,
+          });
+        });
+
+        return;
       }
 
       toast({
         title: "Opret Konto",
-        description: "Logger dig nu ind på din konto."
+        description: "Logger dig nu ind på din konto.",
       });
 
       const res = await signIn("credentials", {
         username: values.username,
         password: values.password,
         redirect: false,
-        callbackUrl: "/profile"
+        callbackUrl: "/profile",
       });
 
       if (res?.error) {
@@ -107,7 +115,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
     } catch (error: any) {
       toast({
         title: "Opret konto",
-        description: error.message
+        description: error.message,
       });
     } finally {
       setIsDisabled(false);
@@ -167,7 +175,7 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
               <FormItem className="flex-1">
                 <FormLabel>Adgangskode</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Adgangskode" {...field} />
+                  <PasswordInput placeholder="Adgangskode" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -180,18 +188,16 @@ export default function SignUpForm({ className = "" }: SignUpFormProps) {
               <FormItem className="flex-1">
                 <FormLabel>Gentag adgangskode</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Gentag adgangskode"
-                    {...field}
-                  />
+                  <PasswordInput placeholder="Gentag adgangskode" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button type="submit" disabled={isDisabled}>Opret konto</Button>
+        <Button type="submit" disabled={isDisabled}>
+          Opret konto
+        </Button>
       </form>
     </Form>
   );

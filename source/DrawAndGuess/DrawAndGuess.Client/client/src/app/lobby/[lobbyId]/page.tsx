@@ -64,29 +64,11 @@ export default function LobbyPage() {
   }, [connection]);
 
   useEffect(() => {
-    if (connection) {
-      connection.on("lobbyUpdated", (lobby: Lobby) => {
-        setLobby(lobby);
-      });
-
-      connection.on("lobbyUpdatedVotes", (votes: Player[]) => {
-        console.log("Votes updated:", votes);
-        setStartGameVotes(votes);
-      });
-
-      connection.on("messageReceived", receiveMessage);
-
-      return () => {
-        connection.off("lobbyUpdated");
-        connection.off("messageReceived");
-      };
-    }
-  }, [connection]);
-
-  useEffect(() => {
     const fetchLobbyData = async () => {
       console.log("Fetching lobby data...");
       console.log("Connection: ", connection);
+      console.log("LobbyId: ", lobbyId);
+      console.log("Session: ", session);
 
       const lobbyData = await connection?.invoke<Lobby>(
         "GetCurrentLobby",
@@ -97,6 +79,11 @@ export default function LobbyPage() {
       console.log("lobbyData", lobbyData);
 
       if (!lobbyData) {
+        await connection?.invoke(
+          "LeaveLobby",
+          parseInt(lobbyId),
+          session?.data?.user
+        );
         router.push("/lobbies");
         toast({
           title: "Lobby",
@@ -112,9 +99,6 @@ export default function LobbyPage() {
 
   useEffect(() => {
     const handleBeforeUnload = async () => {
-      if (!connection || !session.data?.user || !lobby) {
-        return;
-      }
       toast({
         title: "Lobby",
         description: "Forlader lobbyen.",

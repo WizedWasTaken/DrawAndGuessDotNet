@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 
 // UI
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Form,
   FormControl,
@@ -32,7 +33,10 @@ interface SignInFormProps {
   callbackUrl?: string;
 }
 
-export default function SignInForm({ className = "", callbackUrl = "/profile" }: SignInFormProps) {
+export default function SignInForm({
+  className = "",
+  callbackUrl = "/profile",
+}: SignInFormProps) {
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -52,21 +56,30 @@ export default function SignInForm({ className = "", callbackUrl = "/profile" }:
         username: values.username,
         password: values.password,
         redirect: false,
-        callbackUrl: callbackUrl
+        callbackUrl: callbackUrl,
       });
 
-      if (res?.error) {
-        // Handle error if sign-in fails
-        console.error("Sign-in failed:", res.error);
-        throw new Error("Forkert brugernavn eller kodeord.")
+      if (res == null) {
+        throw new Error("No response");
       }
 
-      if (res?.ok) {
+      if (res.error) {
+        toast({
+          title: "Log Ind",
+          description: res.error,
+        });
+
+        return;
+      }
+
+      if (res.ok) {
         toast({
           title: "Log Ind",
           description: "Du er nu logget ind. Hav det sjovt 🎉🎉",
         });
         router.push("/profile");
+
+        return;
       }
     } catch (error: any) {
       toast({
@@ -104,13 +117,15 @@ export default function SignInForm({ className = "", callbackUrl = "/profile" }:
             <FormItem>
               <FormLabel>Adgangskode</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Adgangskode" {...field} />
+                <PasswordInput placeholder="Adgangskode" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isDisabled}>Log ind</Button>
+        <Button type="submit" disabled={isDisabled}>
+          Log ind
+        </Button>
       </form>
     </Form>
   );

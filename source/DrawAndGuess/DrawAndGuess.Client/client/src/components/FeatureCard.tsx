@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { CardSpotlight } from "./ui/card-spotlight";
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -12,12 +13,12 @@ export default function FeatureCard({
   description,
 }: FeatureCardProps) {
   return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/20">
-      <CardContent className="p-6">
+    <CardSpotlight>
+      <section className="relative z-20">
         <div className="mb-4">{icon}</div>
         <h3 className="text-xl font-semibold mb-2">{title}</h3>
         <p className="text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
+      </section>
+    </CardSpotlight>
   );
 }
