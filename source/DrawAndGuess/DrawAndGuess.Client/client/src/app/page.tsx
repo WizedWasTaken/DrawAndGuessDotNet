@@ -13,6 +13,7 @@ export default function Home() {
       <main className="container flex flex-col flex-grow mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <AnimatePresence>
           <motion.div
+            key={0}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -26,6 +27,7 @@ export default function Home() {
           </motion.div>
 
           <motion.div
+            key={1}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -43,22 +45,26 @@ export default function Home() {
           </motion.div>
 
           <motion.div
+            key={2}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             <FeatureCard
+              key={1}
               icon={<Brush className="w-12 h-12 text-primary" />}
               title="Intuitive Drawing Tools"
               description="Express your ideas with our smooth, responsive drawing interface."
             />
             <FeatureCard
+              key={2}
               icon={<Users className="w-12 h-12 text-primary" />}
               title="Real-time Multiplayer"
               description="Connect and play with friends or random opponents worldwide."
             />
             <FeatureCard
+              key={3}
               icon={<Trophy className="w-12 h-12 text-primary" />}
               title="Competitive Leaderboards"
               description="Climb the ranks and showcase your artistic and guessing skills."
@@ -66,6 +72,7 @@ export default function Home() {
           </motion.div>
 
           <motion.div
+            key={3}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -91,6 +98,7 @@ export default function Home() {
           </motion.div>
 
           <motion.div
+            key={4}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}

@@ -54,12 +54,12 @@ export default function TechnicalInformation() {
         <DialogTrigger asChild>
           <Button
             onClick={fetchUserCount}
-            className="p-3 bg-zinc-800 text-zinc-100 rounded-full shadow-lg hover:bg-zinc-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-zinc-200 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            className="p-3 bg-zinc-800 text-zinc-100 my-10 rounded-full shadow-lg hover:bg-zinc-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-zinc-200 dark:text-zinc-900 dark:hover:bg-zinc-300"
           >
             ℹ
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-zinc-100 max-h-3/4 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
+        <DialogContent className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 w-[90%] max-w-[90%]">
           <DialogHeader>
             <DialogTitle>Informationer</DialogTitle>
             <div className="flex flex-col gap-3">

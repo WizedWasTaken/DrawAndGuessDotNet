@@ -48,7 +48,22 @@ export const changelogs: IChangelog[] = [
       "Improved security measures in frontend.",
       "Added SignIn page.",
       "Added SignUp page.",
-      "Added JWT access for certain critical endpoints."
-    ]
-  }
+      "Added JWT access for certain critical endpoints.",
+    ],
+  },
+  {
+    version: "0.3.1",
+    date: "15/12/2024",
+    changes: [
+      "Fixed a bug where the user could not log in.",
+      "Added a new Password component, that adds the ability to show the password.",
+      "Changed Technical Information view.",
+      "Added a new Card component, used on the frontpage.",
+      "Used Cards on more pages.",
+      "Fixed critical backend issues.",
+      "Fixed an issue with the profile page.",
+      "Added a button in lobbies to vote start the game.",
+      "Improved UX with the lobby function",
+    ],
+  },
 ];
