@@ -23,12 +23,12 @@ export const authOptions: NextAuthOptions = {
         // Make a POST request to the custom backend
         const url = process.env.NEXT_PUBLIC_API_URL;
         if (!url) {
-          console.error("URL doesn't exist.")
+          console.error("URL doesn't exist.");
           throw new Error("NEXTAUTH_URL environment variable is not defined");
         }
-        
+
         console.log("Calling API");
-        console.log(url)
+        console.log(url);
         const res = await fetch(`${url}/Auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,8 +42,8 @@ export const authOptions: NextAuthOptions = {
 
         // Ensure the response is OK
         if (!res.ok) {
-          console.log("Response not OK");
-          throw new Error("Der skete en uventet fejl.")
+          const errorText = await res.text();
+          throw new Error(errorText);
         }
 
         const data = await res.json(); // Parse the response

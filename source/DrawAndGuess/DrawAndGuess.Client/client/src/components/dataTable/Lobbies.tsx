@@ -64,6 +64,14 @@ export function LobbiesTable() {
         console.log("Current lobbies:", currentLobbies);
         if (currentLobbies) {
           setLobbies(currentLobbies);
+
+          console.log("Lobbies:", currentLobbies);
+          if (currentLobbies.length === 0) {
+            toast({
+              title: "Lobbies",
+              description: "Der er ingen lobbies at vise.",
+            });
+          }
         }
       } catch (error) {
         console.error("Error fetching lobbies:", error);
@@ -145,12 +153,7 @@ export function LobbiesTable() {
   return (
     <>
       <LobbiesTableTop lobbies={lobbies} createNewLobby={createLobby} />
-      {lobbies.length > 0 ? (
-        <DataTable data={lobbies} columns={LobbyTableColumn(JoinLobby)} />
-      ) : (
-        // TODO: Improve this.
-        <p className="w-full text-center">Ingen lobbyer</p>
-      )}
+      <DataTable data={lobbies} columns={LobbyTableColumn(JoinLobby)} />
     </>
   );
 }
