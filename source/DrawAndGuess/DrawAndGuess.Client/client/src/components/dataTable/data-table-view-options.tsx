@@ -61,7 +61,7 @@ export function DataTableViewOptions<TData>({
                   column.getCanSort()
               )
               .map((column) => {
-                // @ts-ignore
+                // @ts-expect-error displayName is not in the type
                 const displayName = column.columnDef.meta.name as string;
                 return (
                   <DropdownMenuCheckboxItem
@@ -105,7 +105,7 @@ export function DataTableViewOptions<TData>({
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {/* @ts-ignore */}
+                  {/* @ts-expect-error columnDef.meta.name is not typed */}
                   {column.columnDef.meta.name}
                 </DropdownMenuCheckboxItem>
               );

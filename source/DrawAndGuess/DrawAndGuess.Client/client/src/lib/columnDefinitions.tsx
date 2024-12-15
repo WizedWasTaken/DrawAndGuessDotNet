@@ -10,16 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogHeader,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Dialog } from "@/components/ui/dialog";
 
 import { DataTableColumnHeader } from "@/components/dataTable/data-table-header";
 
@@ -30,7 +21,6 @@ import { MoreHorizontal } from "lucide-react";
 
 // Types
 import { Lobby } from "@/entities/lobby";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { Player } from "@/entities/player";
 import { LobbyStatus } from "@/entities/lobby-status";
 
@@ -123,7 +113,11 @@ export function LobbyTableColumn(
         const lobby = row.original as Lobby;
 
         function setTempLobby(lobby: Lobby): void {
-          throw new Error("Function not implemented.");
+          console.log("Temp lobby:", lobby);
+
+          // Do something with the lobby
+
+          return;
         }
 
         return (

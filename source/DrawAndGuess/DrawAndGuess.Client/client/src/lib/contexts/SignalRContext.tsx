@@ -24,7 +24,7 @@ export const SignalRProvider: React.FC<{
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [connectionState, setConnectionState] =
     useState<string>("Disconnected");
-  const [queue, setQueue] = useState<Array<() => void>>([]);
+  const queueRef = React.useRef<Array<() => void>>([]);
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
@@ -39,8 +39,8 @@ export const SignalRProvider: React.FC<{
     newConnection.onreconnected(() => {
       setConnectionState("Connected");
       // Process queued calls
-      queue.forEach((call) => call());
-      setQueue([]);
+      queueRef.current.forEach((call) => call());
+      queueRef.current = [];
     });
 
     const startConnection = async () => {
@@ -49,8 +49,8 @@ export const SignalRProvider: React.FC<{
         setConnectionState("Connected");
         console.log("SignalR Connected");
         // Process queued calls
-        queue.forEach((call) => call());
-        setQueue([]);
+        queueRef.current.forEach((call: () => any) => call());
+        queueRef.current = [];
       } catch (error: any) {
         setConnectionState("Disconnected");
         console.error("Error starting connection:", error.message);
@@ -81,17 +81,14 @@ export const SignalRProvider: React.FC<{
       return connection!.invoke<T>(methodName, ...args);
     } else {
       return new Promise<T>((resolve, reject) => {
-        setQueue((prevQueue) => [
-          ...prevQueue,
-          async () => {
-            try {
-              const result = await connection!.invoke<T>(methodName, ...args);
-              resolve(result);
-            } catch (error) {
-              reject(error);
-            }
-          },
-        ]);
+        queueRef.current.push(async () => {
+          try {
+            const result = await connection!.invoke<T>(methodName, ...args);
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        });
       });
     }
   };

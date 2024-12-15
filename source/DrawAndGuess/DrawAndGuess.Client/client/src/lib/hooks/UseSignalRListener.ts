@@ -1,5 +1,5 @@
 import { useSignalR } from "@/lib/hooks/UseSignalR";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export const useSignalRListener = (
   event: string,

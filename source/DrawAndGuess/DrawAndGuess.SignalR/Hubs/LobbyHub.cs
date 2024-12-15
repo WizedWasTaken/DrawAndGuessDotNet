@@ -131,7 +131,12 @@ namespace DrawAndGuess.SignalR.Hubs
                     voteStartLobby.Value.Remove(player);
                 }
 
-                if (voteStartLobby.Value.Count == 0 || voteStartLobby.Value == null)
+                if (voteStartLobby.Value == null)
+                {
+                    VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
+                }
+
+                if (voteStartLobby.Value.Count == 0)
                 {
                     VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
                 }
