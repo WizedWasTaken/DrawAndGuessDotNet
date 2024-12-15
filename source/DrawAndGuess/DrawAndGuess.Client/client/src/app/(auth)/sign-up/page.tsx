@@ -1,5 +1,4 @@
 import SignUpForm from "@/components/form/SignUpForm";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
