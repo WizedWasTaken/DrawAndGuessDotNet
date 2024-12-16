@@ -253,8 +253,8 @@ export default function LobbyPage() {
                                             <li
                                                 key={index}
                                                 className={`mb-2 ${player.userName === session.data?.user?.userName
-                                                        ? "font-bold"
-                                                        : ""
+                                                    ? "font-bold"
+                                                    : ""
                                                     }`}
                                             >
                                                 {player.userName}
@@ -312,7 +312,7 @@ export default function LobbyPage() {
                 <CardFooter>
                     <Button
                         onClick={handleStartGame}
-                        disabled={!canGameBeStarted}
+                        disabled={canGameBeStarted}
                         className="w-full"
                     >
                         Start Spil ({startGameVotes.length}/
