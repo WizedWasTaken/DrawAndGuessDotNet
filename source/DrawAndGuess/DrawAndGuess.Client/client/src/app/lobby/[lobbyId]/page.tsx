@@ -189,11 +189,7 @@ export default function LobbyPage() {
             return false;
         }
 
-        if (lobby.players.length < 2) {
-            return false;
-        }
-
-        if (lobby.players.length / 2 !== startGameVotes.length) {
+        if (lobby.players.length <= 1) {
             return false;
         }
 
@@ -202,6 +198,7 @@ export default function LobbyPage() {
 
     useEffect(() => {
         setCanGameBeStarted(getCanGameBeStarted());
+        console.log(`setCanGameBeStarted(${getCanGameBeStarted()})`);
     }, [getCanGameBeStarted, lobby]);
 
     const handleSendMessage = async (e: React.FormEvent) => {
@@ -256,7 +253,7 @@ export default function LobbyPage() {
     }
 
     async function startGame(gameId: number) {
-        alert(`Started game: ${gameId}`);
+        router.push(`/game/${gameId}`);
     }
 
     return (
@@ -343,7 +340,7 @@ export default function LobbyPage() {
                 <CardFooter>
                     <Button
                         onClick={handleStartGame}
-                        disabled={canGameBeStarted}
+                        disabled={!canGameBeStarted}
                         className="w-full"
                     >
                         Start Spil ({startGameVotes.length}/
