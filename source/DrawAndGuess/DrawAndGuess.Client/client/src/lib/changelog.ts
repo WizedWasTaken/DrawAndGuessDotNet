@@ -67,4 +67,15 @@ export const changelogs: IChangelog[] = [
       "Changed color scheme, to match the purpose of the application.",
     ],
   },
+  {
+    version: "0.3.2",
+    date: "16/12/2024",
+    changes: [
+      "Improved code quality in the lobby related functions.",
+      "Added a 'Forlad Lobby' button in the lobby page",
+      "Fixed the disabled attribute on the lobby page, to correctly reflect the game's start conditions.",
+      "Improved general UX/UI in Lobby page.",
+      "Improved backend error handling.",
+    ],
+  },
 ];

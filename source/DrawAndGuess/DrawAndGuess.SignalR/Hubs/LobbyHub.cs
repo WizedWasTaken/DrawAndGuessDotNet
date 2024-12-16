@@ -109,12 +109,7 @@ namespace DrawAndGuess.SignalR.Hubs
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
 
-            if (lobby == null)
-            {
-                return;
-            }
-
-            if (player == null)
+            if (lobby == null || player == null)
             {
                 return;
             }
@@ -126,19 +121,15 @@ namespace DrawAndGuess.SignalR.Hubs
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
 
                 var voteStartLobby = VoteStartLobbies.FirstOrDefault(l => l.Key.LobbyId == lobbyId);
-                if (voteStartLobby.Key != null)
+
+                if (voteStartLobby.Key != null && voteStartLobby.Value != null)
                 {
                     voteStartLobby.Value.Remove(player);
-                }
 
-                if (voteStartLobby.Value == null)
-                {
-                    VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
-                }
-
-                if (voteStartLobby.Value.Count == 0)
-                {
-                    VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
+                    if (voteStartLobby.Value.Count == 0)
+                    {
+                        VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
+                    }
                 }
             }
 
@@ -152,6 +143,7 @@ namespace DrawAndGuess.SignalR.Hubs
 
             await SendMessage(lobby.LobbyId, $"{player.UserName} forlod lobbyen.", "System");
         }
+
 
         public Task<Lobby> GetCurrentLobby(int lobbyId, Player player)
         {
