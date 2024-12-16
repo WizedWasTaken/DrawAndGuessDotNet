@@ -4,6 +4,7 @@ import CustomCursor from "@/components/canvas/CustomCursor";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useSignalR } from "@/lib/hooks/UseSignalR"; // Import your SignalR hook
 
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,6 +17,8 @@ export default function Canvas() {
     const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
     const [isCursorInCanvas, setIsCursorInCanvas] = useState<boolean>(true);
     const lastPos = useRef<{ x: number; y: number } | null>(null);
+
+    const { connection } = useSignalR(); // Get the SignalR connection
 
     // On Loads
     useEffect(() => {
@@ -39,6 +42,24 @@ export default function Canvas() {
         };
     });
 
+    useEffect(() => {
+        if (!connection) return;
+
+        connection.on("ReceiveDraw", (data) => {
+            const { x, y, color, brushSize, tool, lastPos } = data;
+            drawOnCanvas(x, y, color, brushSize, tool, lastPos);
+        });
+
+        connection.on("ReceiveClear", () => {
+            clearCanvas();
+        });
+
+        return () => {
+            connection.off("ReceiveDraw");
+            connection.off("ReceiveClear");
+        };
+    }, [clearCanvas, connection]);
+
     const saveState = () => {
         console.info("saveState: " + undoStack.length);
         const canvas = canvasRef.current;
@@ -58,12 +79,28 @@ export default function Canvas() {
 
     const draw = (e: React.MouseEvent) => {
         if (!isDrawing || !canvasRef.current) return;
-        const ctx = canvasRef.current.getContext("2d");
-        if (!ctx) return;
-
         const rect = canvasRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
+
+        if (connection) {
+            connection.invoke("SendDraw", {
+                x,
+                y,
+                color,
+                brushSize,
+                tool,
+                lastPos: lastPos.current,
+            });
+        }
+
+        drawOnCanvas(x, y, color, brushSize, tool, lastPos.current);
+        lastPos.current = { x, y };
+    };
+
+    const drawOnCanvas = (x, y, color, brushSize, tool, lastPos) => {
+        const ctx = canvasRef.current?.getContext("2d");
+        if (!ctx) return;
 
         ctx.beginPath();
         ctx.lineCap = "round";
@@ -77,13 +114,11 @@ export default function Canvas() {
             ctx.strokeStyle = color;
         }
 
-        if (lastPos.current) {
-            ctx.moveTo(lastPos.current.x, lastPos.current.y);
+        if (lastPos) {
+            ctx.moveTo(lastPos.x, lastPos.y);
             ctx.lineTo(x, y);
             ctx.stroke();
         }
-
-        lastPos.current = { x, y };
     };
 
     const startDrawing = (e: React.MouseEvent) => {
@@ -292,6 +327,10 @@ export default function Canvas() {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         setRedoStack([]); // Clear redo stack when canvas is cleared
         saveState();
+
+        if (connection) {
+            connection.invoke("SendClear");
+        }
     }
 
     return (

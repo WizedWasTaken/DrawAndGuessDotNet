@@ -249,5 +249,61 @@ namespace DrawAndGuess.SignalR.Hubs
 
             return Task.FromResult(lobby.Messages);
         }
+
+
+
+
+        ///
+        /// FUNSIES!!!
+        ///
+
+        /// <summary>
+        /// Broadcasts drawing data to all clients in the same lobby.
+        /// </summary>
+        /// <param name="lobbyId">The ID of the lobby where drawing is happening.</param>
+        /// <param name="data">The drawing data containing position, brush size, color, and tool.</param>
+        public async Task SendDrawData(int lobbyId, DrawData data)
+        {
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null)
+            {
+                Console.WriteLine($"Lobby with ID {lobbyId} not found.");
+                return;
+            }
+
+            // Broadcast the drawing data to other clients in the group
+            await Clients.Group(lobbyId.ToString()).SendAsync("ReceiveDrawData", data);
+        }
+
+        /// <summary>
+        /// Clears the canvas for all clients in the same lobby.
+        /// </summary>
+        /// <param name="lobbyId">The ID of the lobby where the canvas is being cleared.</param>
+        public async Task ClearCanvas(int lobbyId)
+        {
+            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null)
+            {
+                Console.WriteLine($"Lobby with ID {lobbyId} not found.");
+                return;
+            }
+
+            // Notify all clients in the group to clear their canvas
+            await Clients.Group(lobbyId.ToString()).SendAsync("ClearCanvas");
+        }
+
+        /// <summary>
+        /// Represents the drawing data sent between clients for real-time collaboration.
+        /// </summary>
+        public class DrawData
+        {
+            public float X { get; set; }
+            public float Y { get; set; }
+            public float? LastX { get; set; }
+            public float? LastY { get; set; }
+            public int BrushSize { get; set; }
+            public string Color { get; set; } = "#000000";
+            public string Tool { get; set; } = "brush"; // Could be "brush", "eraser", etc.
+        }
     }
 }
