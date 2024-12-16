@@ -200,6 +200,8 @@ namespace DrawAndGuess.SignalR.Hubs
                 await SendMessage(lobby.LobbyId, $"{player.UserName} startede spillet.", "System");
                 await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdated", lobby);
                 // Make start game logic.
+
+                await Clients.Group(lobbyId.ToString()).SendAsync("startGame", lobby.LobbyId);
             }
         }
 

@@ -56,6 +56,10 @@ export default function LobbyPage() {
                 setStartGameVotes(votes);
             });
 
+            connection.on("startGame", (gameId: number) => {
+                startGame(gameId);
+            });
+
             connection.on("messageReceived", receiveMessage);
 
             return () => {
@@ -249,6 +253,10 @@ export default function LobbyPage() {
         });
 
         router.push("/lobbies");
+    }
+
+    async function startGame(gameId: number) {
+        alert(`Started game: ${gameId}`);
     }
 
     return (
