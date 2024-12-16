@@ -8,7 +8,7 @@
         private Lobby lobby;
         private List<Round> rounds;
         private DateTime startTime;
-        private DateTime endTime;
+        private DateTime? endTime;
 
         #endregion Fields
 
@@ -16,6 +16,14 @@
 
         public Game()
         {
+        }
+
+        public Game(int gameId, Lobby lobby, List<Round> rounds, DateTime startTime)
+        {
+            GameId = gameId;
+            Lobby = lobby;
+            Rounds = rounds;
+            StartTime = startTime;
         }
 
         public Game(int gameId, Lobby lobby, List<Round> rounds, DateTime startTime, DateTime endTime)
@@ -55,7 +63,7 @@
             set { startTime = value; }
         }
 
-        public DateTime EndTime
+        public DateTime? EndTime
         {
             get { return endTime; }
             set { endTime = value; }
