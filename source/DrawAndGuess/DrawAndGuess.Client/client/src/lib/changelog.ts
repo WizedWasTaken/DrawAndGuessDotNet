@@ -75,6 +75,7 @@ export const changelogs: IChangelog[] = [
       "Added a 'Forlad Lobby' button in the lobby page",
       "Fixed the disabled attribute on the lobby page, to correctly reflect the game's start conditions.",
       "Improved general UX/UI in Lobby page.",
+      "Improved backend error handling.",
     ],
   },
 ];
