@@ -5,108 +5,78 @@ using System.Collections.Concurrent;
 
 namespace DrawAndGuess.SignalR.Hubs
 {
-    public class LobbyHub : Microsoft.AspNetCore.SignalR.Hub, ILobbyHub
+    public class LobbyHub : Hub, ILobbyHub
     {
         private static readonly ConcurrentDictionary<string, Player> ConnectedClients = new();
         private static readonly ConcurrentDictionary<Lobby, List<Player>> VoteStartLobbies = new();
-        private static readonly List<Game> games = new();
-        private static List<Lobby> ActiveLobbies = new();
+        private static readonly List<Game> Games = new();
+        private static readonly List<Lobby> ActiveLobbies = new();
 
-        public LobbyHub()
-        {
-        }
-
-        /// <summary>
-        /// Called when a new connection is established with the hub.
-        /// </summary>
-        /// <returns>Nothing</returns>
         public override async Task OnConnectedAsync()
         {
             var connectionId = Context.ConnectionId;
 
             ConnectedClients.TryAdd(connectionId, new Player
             {
-                Id = connectionId // Use ConnectionId as a unique identifier
+                Id = connectionId
             });
-
-            await Clients.All.SendAsync("userCountChanged", ConnectedClients.Count);
 
             Console.WriteLine($"{DateTime.UtcNow} - {connectionId} connected to the server.");
 
+            await Clients.All.SendAsync("userCountChanged", ConnectedClients.Count);
             await base.OnConnectedAsync();
         }
 
-        /// <summary>
-        /// Called when a connection with the hub is terminated.
-        /// </summary>
-        /// <param name="exception">Exception the user got.</param>
-        /// <returns>Nothing</returns>
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             var connectionId = Context.ConnectionId;
 
-            ConnectedClients.TryRemove(connectionId, out _);
-
-            Console.WriteLine($"{DateTime.UtcNow} - {connectionId} disconnected from the server.");
+            if (ConnectedClients.TryRemove(connectionId, out _))
+            {
+                Console.WriteLine($"{DateTime.UtcNow} - {connectionId} disconnected from the server.");
+            }
 
             await base.OnDisconnectedAsync(exception);
         }
 
         public async Task<int> GetConnectedCount()
         {
-            Console.WriteLine("Kaldt");
             await Clients.Caller.SendAsync("userCountChanged", ConnectedClients.Count);
             return ConnectedClients.Count;
         }
 
         public Task<List<Lobby>> GetCurrentLobbies()
         {
-            var lobbies = ActiveLobbies;
-
-            foreach (var item in games)
-            {
-                lobbies.Add(item.Lobby);
-            }
-
+            var lobbies = ActiveLobbies.Concat(Games.Select(g => g.Lobby)).ToList();
             return Task.FromResult(lobbies);
         }
 
-        public async Task<Lobby> CreateLobby(string title, Player player)
+        public async Task<Lobby> CreateLobby(string title, Player creator)
         {
-            var lobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { }, LobbyStatus.Waiting);
+            var newLobby = new Lobby(ActiveLobbies.Count + 1, title, new List<Player> { creator }, LobbyStatus.Waiting);
 
-            VoteStartLobbies.TryAdd(lobby, new List<Player>());
-            ActiveLobbies.Add(lobby);
-            await SendMessage(lobby.LobbyId, $"{player.UserName} oprettede {lobby.Title}.", "System");
-            await JoinLobby(lobby.LobbyId, player);
+            ActiveLobbies.Add(newLobby);
+            VoteStartLobbies.TryAdd(newLobby, new List<Player>());
 
-            await Clients.All.SendAsync("lobbyCreated", lobby);
+            await Clients.All.SendAsync("lobbyCreated", newLobby);
+            await SendMessage(newLobby.LobbyId, $"{creator.UserName} created the lobby {title}.", "System");
 
-            return lobby;
+            return newLobby;
         }
 
         public async Task<Lobby> JoinLobby(int lobbyId, Player player)
         {
-            var connectionId = Context.ConnectionId;
-
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null) return null;
 
-            if (lobby == null)
+            if (lobby.Players.All(p => p.Id != player.Id))
             {
-                return null;
+                await Groups.AddToGroupAsync(Context.ConnectionId, lobbyId.ToString());
+                lobby.Players.Add(player);
+
+                await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdated", lobby);
+                await SendMessage(lobby.LobbyId, $"{player.UserName} joined the lobby.", "System");
             }
-
-            if (lobby.Players.Any(p => p.Id == player.Id))
-            {
-                return lobby;
-            }
-
-            await Groups.AddToGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
-            lobby.Players.Add(player);
-
-            await Clients.All.SendAsync("lobbyUpdated", lobby);
-            await SendMessage(lobby.LobbyId, $"{player.UserName} tilsluttede sig lobbyen.", "System");
-            await UpdateCurrentLobby(lobby.LobbyId);
 
             return lobby;
         }
@@ -114,157 +84,98 @@ namespace DrawAndGuess.SignalR.Hubs
         public async Task LeaveLobby(int lobbyId, Player player)
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null || player == null) return;
 
-            if (lobby == null || player == null)
+            if (lobby.Players.Remove(player))
             {
-                return;
-            }
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, lobbyId.ToString());
+                await HandleVoteStartRemoval(lobby, player);
 
-            var playerToRemove = lobby.Players.FirstOrDefault(p => p.Id == player.Id);
-            if (playerToRemove != null)
-            {
-                if (lobby.LobbyStatus == LobbyStatus.InGame)
+                if (lobby.Players.Count == 0)
                 {
-                    return;
+                    ActiveLobbies.Remove(lobby);
                 }
-                lobby.Players.Remove(playerToRemove);
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, Convert.ToString(lobbyId));
-
-                var voteStartLobby = VoteStartLobbies.FirstOrDefault(l => l.Key.LobbyId == lobbyId);
-
-                if (voteStartLobby.Key != null && voteStartLobby.Value != null)
+                else
                 {
-                    voteStartLobby.Value.Remove(player);
-
-                    if (voteStartLobby.Value.Count == 0)
-                    {
-                        VoteStartLobbies.TryRemove(voteStartLobby.Key, out _);
-                    }
+                    await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdated", lobby);
+                    await SendMessage(lobby.LobbyId, $"{player.UserName} left the lobby.", "System");
                 }
             }
-
-            await Clients.All.SendAsync("lobbyUpdated", lobby);
-
-            if (lobby.Players.Count == 0)
-            {
-                ActiveLobbies.Remove(lobby);
-                return;
-            }
-
-            await SendMessage(lobby.LobbyId, $"{player.UserName} forlod lobbyen.", "System");
         }
-
 
         public Task<Lobby> GetCurrentLobby(int lobbyId, Player player)
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
-
-            if (lobby == null)
-            {
-                return Task.FromResult<Lobby>(null);
-            }
-
-            if (lobby.Players.All(p => p.Id != player.Id))
-            {
-                JoinLobby(lobby.LobbyId, player);
-                return Task.FromResult(lobby);
-            }
-
             return Task.FromResult(lobby);
-        }
-
-        public Task UpdateCurrentLobby(int lobbyId)
-        {
-            var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
-
-            Clients.Clients(lobby.Players.Select(p => p.Id).ToList()).SendAsync("lobbyUpdated", lobby);
-            return Task.CompletedTask;
         }
 
         public async Task VoteStartGame(int lobbyId, Player player)
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null) return;
 
-            if (lobby == null)
+            var votes = VoteStartLobbies.GetOrAdd(lobby, new List<Player>());
+
+            if (votes.Contains(player))
             {
-                return;
+                votes.Remove(player);
+                await SendMessage(lobby.LobbyId, $"{player.UserName} removed their vote.", "System");
+            }
+            else
+            {
+                votes.Add(player);
+                await SendMessage(lobby.LobbyId, $"{player.UserName} voted to start the game.", "System");
             }
 
-            var voteStartLobby = VoteStartLobbies.GetOrAdd(lobby, new List<Player>());
+            await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdatedVotes", votes);
 
-            if (voteStartLobby.Any(p => p.Id == player.Id))
-            {
-                voteStartLobby.Remove(player);
-                await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdatedVotes", voteStartLobby);
-                await SendMessage(lobby.LobbyId, $"{player.UserName} fjernede sin stemme for at starte spillet.", "System");
-                return;
-            }
-
-            voteStartLobby.Add(player);
-            await SendMessage(lobby.LobbyId, $"{player.UserName} stemte for at starte spillet.", "System");
-            await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdatedVotes", voteStartLobby);
-
-            if (voteStartLobby.Count >= lobby.Players.Count / 2)
+            if (votes.Count >= lobby.Players.Count / 2)
             {
                 lobby.LobbyStatus = LobbyStatus.InGame;
-                await SendMessage(lobby.LobbyId, $"{player.UserName} startede spillet.", "System");
-                await Clients.Group(lobbyId.ToString()).SendAsync("lobbyUpdated", lobby);
-                // Make start game logic.
-
-                StartGame(lobby);
+                await StartGame(lobby);
             }
-        }
-
-        private async Task StartGame(Lobby lobby)
-        {
-            Game game = new(games.Count + 1, lobby, new(), DateTime.UtcNow);
-            games.Add(game);
-            await Clients.Group(lobby.LobbyId.ToString()).SendAsync("startGame", game.Lobby.LobbyId);
         }
 
         public async Task SendMessage(int lobbyId, string message, string username)
         {
-            Message messageObj = new(1, username, message, DateTime.UtcNow);
-
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null) return;
 
-            if (lobby == null)
-            {
-                Console.WriteLine($"Lobby with ID {lobbyId} not found.");
-                return;
-            }
-
+            var messageObj = new Message(lobby.Messages.Count + 1, username, message, DateTime.UtcNow);
             lobby.Messages.Add(messageObj);
 
-            var clientIds = lobby.Players.Select(p => p.Id).ToList();
-            if (clientIds.Count == 0)
-            {
-                Console.WriteLine("No clients in the lobby to send the message to.");
-                return;
-            }
-
-            Console.WriteLine($"Sending message to clients: {string.Join(", ", clientIds)}");
-
-            // Send the message to everyone in the group except the caller
-            if (username == "System")
-            {
-                await Clients.Group(lobbyId.ToString()).SendAsync("messageReceived", messageObj);
-                return;
-            }
-
-            await Clients.OthersInGroup(lobbyId.ToString()).SendAsync("messageReceived", messageObj);
+            await Clients.Group(lobbyId.ToString()).SendAsync("messageReceived", messageObj);
         }
 
         public Task<List<Message>> GetMessages(int lobbyId)
         {
             var lobby = ActiveLobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            return Task.FromResult(lobby?.Messages ?? new List<Message>());
+        }
 
-            if (lobby == null)
+        // Lib Methods
+        private async Task StartGame(Lobby lobby)
+        {
+            var newGame = new Game(Games.Count + 1, lobby, new List<Round>(), DateTime.UtcNow);
+            Games.Add(newGame);
+
+            lobby.LobbyStatus = LobbyStatus.InGame;
+            await Clients.Group(lobby.LobbyId.ToString()).SendAsync("startGame", lobby.LobbyId);
+        }
+
+
+        private async Task HandleVoteStartRemoval(Lobby lobby, Player player)
+        {
+            if (VoteStartLobbies.TryGetValue(lobby, out var votes))
             {
-                return Task.FromResult<List<Message>>(null);
-            }
+                votes.Remove(player);
+                if (!votes.Any())
+                {
+                    VoteStartLobbies.TryRemove(lobby, out _);
+                }
 
-            return Task.FromResult(lobby.Messages);
+                await Clients.Group(lobby.LobbyId.ToString()).SendAsync("lobbyUpdatedVotes", votes);
+            }
         }
     }
 }
