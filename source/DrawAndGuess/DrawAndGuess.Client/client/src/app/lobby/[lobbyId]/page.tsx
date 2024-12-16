@@ -231,6 +231,26 @@ export default function LobbyPage() {
         setChatMessages((prevMessages) => [...prevMessages, message]);
     };
 
+    const leaveLobby = async () => {
+        toast({
+            title: "Lobby",
+            description: "Forlader lobbyen.",
+        });
+
+        await connection?.invoke(
+            "LeaveLobby",
+            parseInt(lobbyId),
+            session.data?.user
+        );
+
+        toast({
+            title: "Lobby",
+            description: "Du har forladt lobbyen.",
+        });
+
+        router.push("/lobbies");
+    }
+
     return (
         <div className="container flex flex-col flex-grow mx-auto p-4">
             <Card className="mb-4 flex flex-grow flex-col">
@@ -238,6 +258,9 @@ export default function LobbyPage() {
                     <CardTitle className="flex justify-between items-center">
                         <span>Lobby: {lobby?.lobbyId}</span>
                         <span>Title: {lobby?.title}</span>
+                        <Button onClick={leaveLobby}>
+                            Forlad lobby
+                        </Button>
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-grow flex-col">
