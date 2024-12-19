@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lobby } from "@/entities/lobby";
-import { useSignalR } from "@/lib/hooks/UseSignalR";
+import { useSignalR } from "@/lib/SignalR/hooks/UseSignalR";
 import { useSession } from "next-auth/react";
-import { toast } from "@/lib/hooks/use-toast";
+import { toast } from "@/lib/Notify/Hooks/use-toast";
 import { Player } from "@/entities/player";
 
 interface ChatMessage {

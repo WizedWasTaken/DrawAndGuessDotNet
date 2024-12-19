@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import "./globals.scss";
 
 // Contexts
-import { SignalRProvider } from "@/lib/contexts/SignalRContext";
+import { SignalRProvider } from "@/lib/SignalR/contexts/SignalRContext";
 
 // Providers
-import { ThemeProvider } from "@/lib/providers/ThemeProvider";
-import AuthProvider from "@/lib/providers/AuthProvider";
+import { ThemeProvider } from "@/lib/Theme/Providers/ThemeProvider";
+import AuthProvider from "@/lib/Auth/Providers/AuthProvider";
 
 // Components
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/app/(layout)/Components/Header";
+import Footer from "@/app/(layout)/Components/Footer";
 import TechnicalInformation from "@/components/TechnicalInformation";
 
 // Toaster

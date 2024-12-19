@@ -2,7 +2,7 @@
 
 // Components
 
-import SignInForm from "@/components/form/SignInForm";
+import SignInForm from "@/app/(auth)/sign-in/Components/SignInForm";
 import {
   Card,
   CardContent,

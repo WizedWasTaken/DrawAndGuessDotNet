@@ -18,13 +18,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 // Schema
-import { signUpSchema } from "@/lib/schemas/authSchemas";
-import { toast } from "@/lib/hooks/use-toast";
-import { callApi } from "@/lib/callApi";
+import { signUpSchema } from "@/lib/Auth/Schemas/authSchemas";
+import { toast } from "@/lib/Notify/Hooks/use-toast";
+import { callApi } from "@/lib/Api/Helper/callApi";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { PasswordInput } from "../ui/password-input";
+import { PasswordInput } from "@/components/ui/password-input";
 
 interface ApiResponse {
   description?: string;
@@ -34,7 +34,7 @@ interface SignUpFormProps {
   className?: string;
 }
 
-export default function SignUpForm({}: SignUpFormProps) {
+export default function SignUpForm({ }: SignUpFormProps) {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -73,9 +73,8 @@ export default function SignUpForm({}: SignUpFormProps) {
         (apiRes.data as ApiResponse[]).forEach((error) => {
           toast({
             title: "Opret Konto",
-            description: `${
-              error?.description ?? "Der opstod en uventet fejl"
-            }`,
+            description: `${error?.description ?? "Der opstod en uventet fejl"
+              }`,
           });
         });
 

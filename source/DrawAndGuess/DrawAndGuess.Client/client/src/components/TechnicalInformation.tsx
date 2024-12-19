@@ -7,8 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useSignalR } from "@/lib/hooks/UseSignalR";
-import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
+import { useSignalR } from "@/lib/SignalR/hooks/UseSignalR";
+import { useSignalRListener } from "@/lib/SignalR/hooks/UseSignalRListener";
 import { useCallback, useEffect, useState } from "react";
 import Changelog from "@/components/Changelog";
 import { Button } from "./ui/button";

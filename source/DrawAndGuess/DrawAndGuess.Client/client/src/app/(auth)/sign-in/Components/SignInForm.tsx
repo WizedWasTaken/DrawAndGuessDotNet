@@ -17,14 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signInSchema } from "@/lib/schemas/authSchemas";
+import { signInSchema } from "@/lib/Auth/Schemas/authSchemas";
 
 // Client Navigation
 import { useRouter } from "next/navigation";
 
 // Auth
 import { signIn } from "next-auth/react";
-import { toast } from "@/lib/hooks/use-toast";
+import { toast } from "@/lib/Notify/Hooks/use-toast";
 import { useState } from "react";
 
 interface SignInFormProps {

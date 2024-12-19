@@ -1,6 +1,6 @@
 import { render, screen, waitFor, act } from "@testing-library/react";
 import Home from "@/app/lobbies/page";
-import { LobbiesTable } from "@/components/dataTable/Lobbies";
+import { LobbiesTable } from "@/app/lobbies/Components/Lobbies";
 
 jest.mock("@/components/dataTable/Lobbies", () => ({
   LobbiesTable: jest.fn(() => <div>Lobbies Table Mock</div>),

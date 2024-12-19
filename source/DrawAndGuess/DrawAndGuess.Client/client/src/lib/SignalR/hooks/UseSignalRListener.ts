@@ -1,4 +1,4 @@
-import { useSignalR } from "@/lib/hooks/UseSignalR";
+import { useSignalR } from "@/lib/SignalR/hooks/UseSignalR";
 import { useEffect } from "react";
 
 export const useSignalRListener = (

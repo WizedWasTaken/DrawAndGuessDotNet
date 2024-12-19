@@ -3,13 +3,13 @@
 // Imports
 import React from "react";
 import { DataTable } from "@/components/dataTable/data-table";
-import { LobbyTableColumn } from "@/lib/columnDefinitions";
+import { LobbyTableColumn } from "@/lib/Data-Table/Helper/columnDefinitions";
 import { Lobby } from "@/entities/lobby"; // Ensure you have a Member type defined appropriately
-import LobbiesTableTop from "@/components/dataTable/lobbiesTableTop";
-import { useSignalR } from "@/lib/hooks/UseSignalR";
-import { useSignalRListener } from "@/lib/hooks/UseSignalRListener";
+import LobbiesTableTop from "@/app/lobbies/Components/lobbiesTableTop";
+import { useSignalR } from "@/lib/SignalR/hooks/UseSignalR";
+import { useSignalRListener } from "@/lib/SignalR/hooks/UseSignalRListener";
 import { useRouter } from "next/navigation";
-import { toast } from "@/lib/hooks/use-toast";
+import { toast } from "@/lib/Notify/Hooks/use-toast";
 import { LobbyStatus } from "@/entities/lobby-status";
 import { useSession } from "next-auth/react";
 

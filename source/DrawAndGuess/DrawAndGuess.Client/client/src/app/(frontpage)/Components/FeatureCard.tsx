@@ -1,4 +1,4 @@
-import { CardSpotlight } from "./ui/card-spotlight";
+import { CardSpotlight } from "@/components/ui/card-spotlight";
 
 interface FeatureCardProps {
   icon: React.ReactNode;

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import FeatureCard from "@/components/FeatureCard";
+import FeatureCard from "@/app/(frontpage)/Components/FeatureCard";
 import { Badge } from "@/components/ui/badge";
 import { Brush, Users, Trophy, Zap, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";

@@ -1,6 +1,6 @@
 // Components
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { LobbiesTable } from "@/components/dataTable/Lobbies";
+import { LobbiesTable } from "@/app/lobbies/Components/Lobbies";
 
 export default function Home() {
   return (

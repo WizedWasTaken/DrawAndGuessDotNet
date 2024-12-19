@@ -1,5 +1,5 @@
 // Components
-import SignUpForm from "@/components/form/SignUpForm";
+import SignUpForm from "@/app/(auth)/sign-up/Components/SignUpForm";
 import {
   Card,
   CardContent,

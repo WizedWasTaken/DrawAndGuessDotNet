@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useSession } from "next-auth/react";
-import Logo from "@/components/Logo";
+import Logo from "@/app/(frontpage)/Components/Logo";
 
 export default function Header() {
   const { data: session } = useSession();
